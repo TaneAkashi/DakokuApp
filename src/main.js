@@ -78,6 +78,16 @@ const runDakokuByMenu = async (task) => {
     }
   } catch (e) {
     console.error(e);
+
+    if (store.get('sound', false)) {
+      sound.play('error');
+    }
+    const notification = new Notification({
+      title: '打刻に失敗しました',
+      body: '',
+      timeoutType: 'default',
+    });
+    notification.show();
   }
 };
 
