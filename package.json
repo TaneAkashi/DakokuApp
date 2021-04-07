@@ -40,7 +40,7 @@
   "dependencies": {
     "@slack/webhook": "^6.0.0",
     "akashi-dakoku-core": "^0.3.0",
-    "electron-store": "^7.0.2",
+    "electron-store": "^7.0.3",
     "puppeteer-core": "^8.0.0",
     "puppeteer-in-electron": "^3.0.3"
   }
