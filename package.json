@@ -1,0 +1,47 @@
+{
+  "name": "DakokuApp",
+  "version": "0.0.0",
+  "description": "Dakoku App",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "NODE_ENV=development electron .",
+    "build:mac": "NODE_ENV=production electron-builder --mac --x64",
+    "build:win": "NODE_ENV=production electron-builder --win --x64",
+    "lint": "eslint --ext .js --ignore-path .gitignore .",
+    "prepare": "husky install"
+  },
+  "build": {
+    "appId": "dev.amotarao.taneakashi.dakoku-app",
+    "mac": {
+      "category": "public.app-category.utilities",
+      "icon": "img/icon.png"
+    },
+    "win": {
+      "icon": "img/icon.png",
+      "target": "nsis"
+    },
+    "extraResources": [
+      "img/**/*"
+    ]
+  },
+  "lint-staged": {
+    "*.js": "eslint --fix"
+  },
+  "devDependencies": {
+    "electron": "^12.0.2",
+    "electron-builder": "^22.10.5",
+    "eslint": "^7.23.0",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-plugin-prettier": "^3.3.1",
+    "husky": "^6.0.0",
+    "lint-staged": "^10.5.4",
+    "prettier": "^2.2.1"
+  },
+  "dependencies": {
+    "@slack/webhook": "^6.0.0",
+    "akashi-dakoku-core": "^0.3.0",
+    "electron-store": "^7.0.2",
+    "puppeteer-core": "^8.0.0",
+    "puppeteer-in-electron": "^3.0.3"
+  }
+}
