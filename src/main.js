@@ -54,21 +54,30 @@ const runDakoku = async (task, options) => {
 };
 
 const runDakokuByMenu = async (task) => {
-  const options = getOptions();
-  const result = await runDakoku(task, options);
-  if (store.get('sound', false)) {
-    sound.play(task);
-  }
-  const notification = new Notification({
-    title: result.status + (result.telework ? ` ${result.telework}` : ''),
-    body: result.note ? `アラート: ${result.note}` : '',
-    timeoutType: 'default',
-  });
-  notification.show();
+  try {
+    const url = store.get('slack.url') || '';
+    const icon_emoji = store.get('slack.icon_emoji') || undefined;
+    const username = store.get('slack.username') || undefined;
 
-  const slackOptions = store.getSlackOptions();
-  if (slackOptions.url) {
-    await slack.sendSuccessMessage(slackOptions, result.status, result.note, result.telework);
+    const options = getOptions();
+    const result = await runDakoku(task, options);
+
+    if (store.get('sound', false)) {
+      sound.play(task);
+    }
+    const notification = new Notification({
+      title: result.status + (result.telework ? ` ${result.telework}` : ''),
+      body: result.note ? `アラート: ${result.note}` : '',
+      timeoutType: 'default',
+    });
+    notification.show();
+
+    const slackOptions = store.getSlackOptions();
+    if (slackOptions.url) {
+      await slack.sendSuccessMessage(slackOptions, result.status, result.note, result.telework);
+    }
+  } catch (e) {
+    console.error(e);
   }
 };
 
