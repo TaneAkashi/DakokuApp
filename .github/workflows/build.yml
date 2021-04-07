@@ -8,6 +8,8 @@ jobs:
     name: Build for Windows
     runs-on: macos-latest
     timeout-minutes: 5
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
       - name: Checkout
@@ -34,6 +36,8 @@ jobs:
     name: Build for Mac OS
     runs-on: macos-latest
     timeout-minutes: 5
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
       - name: Checkout
