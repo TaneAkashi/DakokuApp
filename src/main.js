@@ -77,13 +77,13 @@ const runDakokuByMenu = async (task) => {
       await slack.sendSuccessMessage(slackOptions, result.status, result.note, result.telework);
     }
   } catch (e) {
-    console.error(e);
+    const message = e instanceof Error ? e.message : '打刻に失敗しました';
 
     if (store.get('sound', false)) {
       sound.play('error');
     }
     const notification = new Notification({
-      title: '打刻に失敗しました',
+      title: message,
       body: '',
       timeoutType: 'default',
     });
@@ -92,7 +92,7 @@ const runDakokuByMenu = async (task) => {
     if (url) {
       const webhook = new IncomingWebhook(url);
       await webhook.send({
-        text: ':warning: 打刻に失敗しました',
+        text: `:warning: ${message}`,
         icon_emoji,
         username,
         color: 'error',
