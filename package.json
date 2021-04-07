@@ -5,8 +5,8 @@
   "main": "src/main.js",
   "scripts": {
     "start": "NODE_ENV=development electron .",
-    "build:mac": "NODE_ENV=production electron-builder --mac --x64",
-    "build:win": "NODE_ENV=production electron-builder --win --x64",
+    "build:mac": "cross-env NODE_ENV=production electron-builder --mac --x64",
+    "build:win": "cross-env NODE_ENV=production electron-builder --win --x64",
     "lint": "eslint --ext .js --ignore-path .gitignore .",
     "prepare": "husky install"
   },
