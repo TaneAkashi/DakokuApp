@@ -6,7 +6,7 @@ on:
 jobs:
   build_win:
     name: Build for Windows
-    runs-on: macos-11.0
+    runs-on: macos-latest
     timeout-minutes: 5
 
     steps:
@@ -32,7 +32,7 @@ jobs:
 
   build_mac:
     name: Build for Mac OS
-    runs-on: macos-11.0
+    runs-on: macos-latest
     timeout-minutes: 5
 
     steps:
