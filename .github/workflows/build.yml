@@ -1,0 +1,57 @@
+name: Build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build_win:
+    name: Build for Windows
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Setup Node.js 12
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12
+
+    - name: Install dependencies
+      run: yarn --frozen-lockfile
+
+    - name: Build app
+      run: yarn build:win
+
+    - name: Archive artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: build-win
+        path: dist
+
+  build_mac:
+    name: Build for Mac OS
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Setup Node.js 12
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12
+
+    - name: Install dependencies
+      run: yarn --frozen-lockfile
+
+    - name: Build app
+      run: yarn build:mac
+
+    - name: Archive artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: build-mac
+        path: dist
