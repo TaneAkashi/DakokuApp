@@ -6,7 +6,7 @@ on:
 jobs:
   build_win:
     name: Build for Windows
-    runs-on: macos-latest
+    runs-on: windows-latest
     timeout-minutes: 5
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
