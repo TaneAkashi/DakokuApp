@@ -54,11 +54,11 @@ const runDakoku = async (task, options) => {
 };
 
 const runDakokuByMenu = async (task) => {
-  try {
-    const url = store.get('slack.url') || '';
-    const icon_emoji = store.get('slack.icon_emoji') || undefined;
-    const username = store.get('slack.username') || undefined;
+  const url = store.get('slack.url') || '';
+  const icon_emoji = store.get('slack.icon_emoji') || undefined;
+  const username = store.get('slack.username') || undefined;
 
+  try {
     const options = getOptions();
     const result = await runDakoku(task, options);
 
@@ -88,6 +88,16 @@ const runDakokuByMenu = async (task) => {
       timeoutType: 'default',
     });
     notification.show();
+
+    if (url) {
+      const webhook = new IncomingWebhook(url);
+      await webhook.send({
+        text: ':warning: 打刻に失敗しました',
+        icon_emoji,
+        username,
+        color: 'error',
+      });
+    }
   }
 };
 
