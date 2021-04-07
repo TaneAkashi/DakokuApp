@@ -54,12 +54,6 @@ const runDakoku = async (task, options) => {
 };
 
 const runDakokuByMenu = async (task) => {
-  const slackOptions = {
-    url: store.get('slack.url') || '',
-    icon_emoji: store.get('slack.icon_emoji') || undefined,
-    username: store.get('slack.username') || undefined,
-  };
-
   const options = getOptions();
   const result = await runDakoku(task, options);
   if (store.get('sound', false)) {
@@ -72,6 +66,7 @@ const runDakokuByMenu = async (task) => {
   });
   notification.show();
 
+  const slackOptions = store.getSlackOptions();
   if (slackOptions.url) {
     await slack.sendSuccessMessage(slackOptions, result.status, result.note, result.telework);
   }

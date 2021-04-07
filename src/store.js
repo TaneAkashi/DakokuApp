@@ -66,7 +66,16 @@ const getStore = () => {
   return store.store;
 };
 
+const getSlackOptions = () => {
+  return {
+    url: store.get('slack.url') || '',
+    icon_emoji: store.get('slack.icon_emoji') || undefined,
+    username: store.get('slack.username') || undefined,
+  };
+};
+
 exports.initialize = initialize;
 exports.get = get;
 exports.set = set;
 exports.getStore = getStore;
+exports.getSlackOptions = getSlackOptions;
