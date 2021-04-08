@@ -63,7 +63,7 @@ const getSound = () => {
 };
 
 const getShowDirectly = () => {
-  return store.get('showDirectly');
+  return store.get('showDirectly', false);
 };
 
 const getPort = () => {
