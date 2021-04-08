@@ -54,10 +54,6 @@ const initialize = () => {
   store = new Store({ schema });
 };
 
-const getStore = () => {
-  return store.store;
-};
-
 const getSound = () => {
   return store.get('sound', false);
 };
@@ -68,6 +64,18 @@ const getShowDirectly = () => {
 
 const getPort = () => {
   return store.get('port', 9999);
+};
+
+const getInitialOptions = () => {
+  const dakokuOptions = getDakokuOptions();
+
+  return {
+    username: dakokuOptions.username,
+    company: dakokuOptions.company,
+    slack: getSlackOptions(),
+    sound: getSound(),
+    showDirectly: getShowDirectly(),
+  };
 };
 
 const getDakokuOptions = () => {
@@ -104,10 +112,10 @@ const saveOtherOptions = (sound, showDirectly) => {
 };
 
 exports.initialize = initialize;
-exports.getStore = getStore;
 exports.getSound = getSound;
 exports.getShowDirectly = getShowDirectly;
 exports.getPort = getPort;
+exports.getInitialOptions = getInitialOptions;
 exports.getDakokuOptions = getDakokuOptions;
 exports.saveDakokuOptions = saveDakokuOptions;
 exports.getSlackOptions = getSlackOptions;

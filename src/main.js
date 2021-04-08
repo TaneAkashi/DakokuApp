@@ -31,8 +31,7 @@ const openWindow = async () => {
     shell.openExternal(url);
   });
   await mainWindow.loadFile('src/index.html');
-  const { password, ...rest } = store.getStore();
-  mainWindow.webContents.send('store-data', rest);
+  mainWindow.webContents.send('store-data', store.getInitialOptions());
 };
 
 function closeWindow() {
