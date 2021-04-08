@@ -54,16 +54,34 @@ const initialize = () => {
   store = new Store({ schema });
 };
 
-const get = (...args) => {
-  return store.get(...args);
-};
-
-const set = (...args) => {
-  return store.set(...args);
-};
-
 const getStore = () => {
   return store.store;
+};
+
+const getSound = () => {
+  return store.get('sound', false);
+};
+
+const getShowDirectly = () => {
+  return store.get('showDirectly');
+};
+
+const getPort = () => {
+  return store.get('port', 9999);
+};
+
+const getDakokuOptions = () => {
+  return {
+    username: store.get('username'),
+    password: store.get('password'),
+    company: store.get('company'),
+  };
+};
+
+const saveDakokuOptions = (email, password, company) => {
+  store.set('username', email);
+  store.set('password', password);
+  store.set('company', company);
 };
 
 const getSlackOptions = () => {
@@ -74,8 +92,24 @@ const getSlackOptions = () => {
   };
 };
 
+const saveSlackOptions = (url, icon_emoji, username) => {
+  store.set('slack.url', url);
+  store.set('slack.icon_emoji', icon_emoji);
+  store.set('slack.username', username);
+};
+
+const saveOtherOptions = (sound, showDirectly) => {
+  store.set('sound', sound);
+  store.set('showDirectly', showDirectly);
+};
+
 exports.initialize = initialize;
-exports.get = get;
-exports.set = set;
 exports.getStore = getStore;
+exports.getSound = getSound;
+exports.getShowDirectly = getShowDirectly;
+exports.getPort = getPort;
+exports.getDakokuOptions = getDakokuOptions;
+exports.saveDakokuOptions = saveDakokuOptions;
 exports.getSlackOptions = getSlackOptions;
+exports.saveSlackOptions = saveSlackOptions;
+exports.saveOtherOptions = saveOtherOptions;
