@@ -37,4 +37,15 @@ const sendSuccessMessage = async (options, status = '', note = '', telework = ''
   });
 };
 
+const sendMessage = async (options, message = '') => {
+  const webhook = new IncomingWebhook(options.url);
+
+  return webhook.send({
+    text: message,
+    icon_emoji: options.icon_emoji,
+    username: options.username,
+  });
+};
+
 exports.sendSuccessMessage = sendSuccessMessage;
+exports.sendMessage = sendMessage;

@@ -54,9 +54,7 @@ const runDakoku = async (task, options) => {
 };
 
 const runDakokuByMenu = async (task) => {
-  const url = store.get('slack.url') || '';
-  const icon_emoji = store.get('slack.icon_emoji') || undefined;
-  const username = store.get('slack.username') || undefined;
+  const slackOptions = store.getSlackOptions();
 
   try {
     const options = getOptions();
@@ -72,7 +70,6 @@ const runDakokuByMenu = async (task) => {
     });
     notification.show();
 
-    const slackOptions = store.getSlackOptions();
     if (slackOptions.url) {
       await slack.sendSuccessMessage(slackOptions, result.status, result.note, result.telework);
     }
@@ -89,14 +86,8 @@ const runDakokuByMenu = async (task) => {
     });
     notification.show();
 
-    if (url) {
-      const webhook = new IncomingWebhook(url);
-      await webhook.send({
-        text: `:warning: ${message}`,
-        icon_emoji,
-        username,
-        color: 'error',
-      });
+    if (slackOptions.url) {
+      await slack.sendMessage(slackOptions, `:warning: ${message}`);
     }
   }
 };
