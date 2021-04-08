@@ -13,14 +13,14 @@ const saveOtherOptions = (sound, showDirectly) => {
 };
 
 window.addEventListener('DOMContentLoaded', () => {
-  ipcRenderer.on('store-data', (event, store) => {
-    document.getElementById('email').value = store.username;
-    document.getElementById('office').value = store.company;
-    document.getElementById('slack-url').value = store.slack.url;
-    document.getElementById('slack-icon_emoji').value = store.slack.icon_emoji;
-    document.getElementById('slack-username').value = store.slack.username;
-    document.getElementById('sound').checked = store.sound;
-    document.getElementById('show-directly').checked = store.showDirectly;
+  ipcRenderer.on('store-data', (event, options) => {
+    document.getElementById('email').value = options.username;
+    document.getElementById('office').value = options.company;
+    document.getElementById('slack-url').value = options.slack.url;
+    document.getElementById('slack-icon_emoji').value = options.slack.icon_emoji;
+    document.getElementById('slack-username').value = options.slack.username;
+    document.getElementById('sound').checked = options.sound;
+    document.getElementById('show-directly').checked = options.showDirectly;
   });
 
   document.getElementById('form').addEventListener('submit', async (event) => {
