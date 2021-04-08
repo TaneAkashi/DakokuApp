@@ -3,7 +3,7 @@ const pie = require('puppeteer-in-electron');
 const puppeteer = require('puppeteer-core');
 const path = require('path');
 const dakoku = require('akashi-dakoku-core');
-const { IncomingWebhook } = require('@slack/webhook');
+const slack = require('./slack');
 const sound = require('./sound');
 const store = require('./store');
 const tray = require('./tray');
@@ -54,10 +54,6 @@ const runDakoku = async (task, options) => {
 };
 
 const runDakokuByMenu = async (task) => {
-  const url = store.get('slack.url') || '';
-  const icon_emoji = store.get('slack.icon_emoji') || undefined;
-  const username = store.get('slack.username') || undefined;
-
   const options = getOptions();
   const result = await runDakoku(task, options);
   if (store.get('sound', false)) {
@@ -70,41 +66,9 @@ const runDakokuByMenu = async (task) => {
   });
   notification.show();
 
-  if (url) {
-    const webhook = new IncomingWebhook(url);
-    const blocks = [];
-
-    let text = ':check_mark: ' + result.status;
-    if (result.telework) {
-      text += ' ' + result.telework;
-    }
-    blocks.push({
-      type: 'section',
-      text: {
-        type: 'mrkdwn',
-        text,
-      },
-    });
-
-    if (result.note) {
-      blocks.push({
-        type: 'context',
-        elements: [
-          {
-            type: 'mrkdwn',
-            text: `:bell: アラートがあります: ${result.note}`,
-          },
-        ],
-      });
-    }
-
-    await webhook.send({
-      text,
-      icon_emoji,
-      username,
-      color: 'good',
-      blocks,
-    });
+  const slackOptions = store.getSlackOptions();
+  if (slackOptions.url) {
+    await slack.sendSuccessMessage(slackOptions, result.status, result.note, result.telework);
   }
 };
 
