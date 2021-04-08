@@ -32,7 +32,6 @@ const sendSuccessMessage = async (options, status = '', note = '', telework = ''
     text,
     icon_emoji: options.icon_emoji,
     username: options.username,
-    color: 'good',
     blocks,
   });
 };
