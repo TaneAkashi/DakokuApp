@@ -294,10 +294,10 @@ ajv@^8.0.1:
     require-from-string "^2.0.2"
     uri-js "^4.2.2"
 
-akashi-dakoku-core@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/akashi-dakoku-core/-/akashi-dakoku-core-0.4.0.tgz#0ac1dea20ed1dd0a53775717b35d1579435b8138"
-  integrity sha512-7/nA0p4M4I0JcK7kZDWJ45FHmPatmjZXVpVrlYPbBRDcPfz+gRTLMtYABzZujtDuxRgDcKM1h7Ad1mgj14Z+kQ==
+akashi-dakoku-core@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/akashi-dakoku-core/-/akashi-dakoku-core-0.5.0.tgz#f9db7cc6261f54bd739f0e5a612add10efa55c63"
+  integrity sha512-mip8gi368onfBErvYwi6gYN9dSfpVubKhttV1yjBqJPDTQw4cQELbDpv0tRLMaSD9tO7UQZ/RKpCr2Vfb5kEfA==
 
 ansi-align@^3.0.0:
   version "3.0.0"
