@@ -54,42 +54,77 @@ const runDakoku = async (task, options) => {
 };
 
 const runDakokuByMenu = async (task) => {
+  const dakokuOptions = getOptions();
   const slackOptions = store.getSlackOptions();
 
-  try {
-    const options = getOptions();
-    const result = await runDakoku(task, options);
+  const payload = await runDakoku(task, dakokuOptions)
+    .then((result) => {
+      const blocks = [];
 
-    if (store.get('sound', false)) {
-      sound.play(task);
-    }
-    const notification = new Notification({
-      title: result.status + (result.telework ? ` ${result.telework}` : ''),
-      body: result.note ? `アラート: ${result.note}` : '',
-      timeoutType: 'default',
+      let text = ':check_mark: ' + status;
+      if (result.telework) {
+        text += ' ' + result.telework;
+      }
+
+      blocks.push({
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text,
+        },
+      });
+
+      if (result.note) {
+        blocks.push({
+          type: 'context',
+          elements: [
+            {
+              type: 'mrkdwn',
+              text: `:bell: アラートがあります: ${result.note}`,
+            },
+          ],
+        });
+      }
+
+      return {
+        success: true,
+        soundType: task,
+        notification: {
+          title: result.status + (result.telework ? ` ${result.telework}` : ''),
+          body: result.note ? `アラート: ${result.note}` : '',
+        },
+        slack: {
+          text,
+          blocks,
+        },
+      };
+    })
+    .catch((e) => {
+      const message = e instanceof Error ? e.message : '打刻に失敗しました';
+      return {
+        success: false,
+        soundType: 'error',
+        notification: {
+          title: message,
+          body: '',
+        },
+        slack: {
+          text: `:warning: ${message}`,
+        },
+      };
     });
-    notification.show();
 
-    if (slackOptions.url) {
-      await slack.sendSuccessMessage(slackOptions, result.status, result.note, result.telework);
-    }
-  } catch (e) {
-    const message = e instanceof Error ? e.message : '打刻に失敗しました';
-
-    if (store.get('sound', false)) {
-      sound.play('error');
-    }
-    const notification = new Notification({
-      title: message,
-      body: '',
-      timeoutType: 'default',
-    });
-    notification.show();
-
-    if (slackOptions.url) {
-      await slack.sendMessage(slackOptions, `:warning: ${message}`);
-    }
+  if (store.get('sound', false)) {
+    sound.play(payload.soundType);
   }
+
+  const notification = new Notification({
+    ...payload.notification,
+    timeoutType: 'default',
+  }).show();
+  notification.show();
+
+  await slack.sendMessage(slackOptions, slack.text, slack.blocks);
 };
 
 const getOptions = () => ({
