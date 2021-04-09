@@ -59,33 +59,6 @@ const runDakokuByMenu = async (task) => {
 
   const payload = await runDakoku(task, dakokuOptions)
     .then((result) => {
-      const blocks = [];
-
-      let text = ':check_mark: ' + status;
-      if (result.telework) {
-        text += ' ' + result.telework;
-      }
-
-      blocks.push({
-        type: 'section',
-        text: {
-          type: 'mrkdwn',
-          text,
-        },
-      });
-
-      if (result.note) {
-        blocks.push({
-          type: 'context',
-          elements: [
-            {
-              type: 'mrkdwn',
-              text: `:bell: アラートがあります: ${result.note}`,
-            },
-          ],
-        });
-      }
-
       return {
         success: true,
         soundType: task,
@@ -93,10 +66,7 @@ const runDakokuByMenu = async (task) => {
           title: result.status + (result.telework ? ` ${result.telework}` : ''),
           body: result.note ? `アラート: ${result.note}` : '',
         },
-        slack: {
-          text,
-          blocks,
-        },
+        slack: slack.generateSuccessMessage(result.status, result.note, result.telework),
       };
     })
     .catch((e) => {
