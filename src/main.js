@@ -121,7 +121,7 @@ const runDakokuByMenu = async (task) => {
   const notification = new Notification({
     ...payload.notification,
     timeoutType: 'default',
-  }).show();
+  });
   notification.show();
 
   await slack.sendMessage(slackOptions, slack.text, slack.blocks);
