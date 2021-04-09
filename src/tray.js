@@ -1,4 +1,4 @@
-const { Menu, Tray, app } = require('electron');
+const { Menu, Tray, app, shell } = require('electron');
 const path = require('path');
 
 let tray = null;
@@ -87,6 +87,13 @@ const generateMenu = (open, run, showDirectly) => {
     },
     {
       type: 'separator',
+    },
+    {
+      type: 'normal',
+      label: 'AKASHI',
+      click: () => {
+        shell.openExternal('https://atnd.ak4.jp/login');
+      },
     },
     {
       type: 'normal',
