@@ -5,8 +5,9 @@
   "main": "lib/main.js",
   "scripts": {
     "start": "NODE_ENV=development electron .",
-    "build:mac": "tsc && cross-env NODE_ENV=production electron-builder --mac --x64",
-    "build:win": "tsc && cross-env NODE_ENV=production electron-builder --win --x64",
+    "build:ts": "tsc",
+    "build:mac": "yarn build:ts && cross-env NODE_ENV=production electron-builder --mac --x64",
+    "build:win": "yarn build:ts && cross-env NODE_ENV=production electron-builder --win --x64",
     "lint": "eslint --ext .js,.ts --ignore-path .gitignore .",
     "prepare": "husky install"
   },
