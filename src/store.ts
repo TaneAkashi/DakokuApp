@@ -87,17 +87,17 @@ export const initialize = (): void => {
 };
 
 export const getSound = (): boolean => {
-  if (!store) throw new Error();
+  if (!store) throw new Error('store is not initialized.');
   return store.get('sound', false);
 };
 
 export const getShowDirectly = (): boolean => {
-  if (!store) throw new Error();
+  if (!store) throw new Error('store is not initialized.');
   return store.get('showDirectly', false);
 };
 
 export const getPort = (): number => {
-  if (!store) throw new Error();
+  if (!store) throw new Error('store is not initialized.');
   return store.get('port', 9999);
 };
 
@@ -114,7 +114,7 @@ export const getInitialOptions = (): InitialOptions => {
 };
 
 export const getDakokuOptions = (): DakokuOptions => {
-  if (!store) throw new Error();
+  if (!store) throw new Error('store is not initialized.');
   return {
     username: store.get('username'),
     password: store.get('password'),
@@ -123,14 +123,14 @@ export const getDakokuOptions = (): DakokuOptions => {
 };
 
 export const saveDakokuOptions = (email: string, password: string, company: string): void => {
-  if (!store) throw new Error();
+  if (!store) throw new Error('store is not initialized.');
   store.set('username', email);
   store.set('password', password);
   store.set('company', company);
 };
 
 export const getSlackOptions = (): SlackOptions => {
-  if (!store) throw new Error();
+  if (!store) throw new Error('store is not initialized.');
   return {
     url: store.get('slack.url') || '',
     icon_emoji: store.get('slack.icon_emoji'),
@@ -139,14 +139,14 @@ export const getSlackOptions = (): SlackOptions => {
 };
 
 export const saveSlackOptions = (url: string, icon_emoji: string, username: string): void => {
-  if (!store) throw new Error();
+  if (!store) throw new Error('store is not initialized.');
   store.set('slack.url', url);
   store.set('slack.icon_emoji', icon_emoji);
   store.set('slack.username', username);
 };
 
 export const saveOtherOptions = (sound: boolean, showDirectly: boolean): void => {
-  if (!store) throw new Error();
+  if (!store) throw new Error('store is not initialized.');
   store.set('sound', sound);
   store.set('showDirectly', showDirectly);
 };

@@ -52,7 +52,7 @@ function closeWindow() {
 
 const runDakoku = async (task: TaskType, options: DakokuOptions): Promise<dakoku.Result> => {
   if (!browser) {
-    throw new Error();
+    throw new Error('browser is not initialized.');
   }
   const window = new BrowserWindow({
     show: false,
