@@ -30,7 +30,7 @@ const openWindow = async () => {
     event.preventDefault();
     shell.openExternal(url);
   });
-  await mainWindow.loadFile('src/index.html');
+  await mainWindow.loadFile('templates/index.html');
   mainWindow.webContents.send('store-data', store.getInitialOptions());
 };
 
