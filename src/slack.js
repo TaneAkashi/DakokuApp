@@ -1,9 +1,12 @@
 const { IncomingWebhook } = require('@slack/webhook');
 
 const generateSuccessMessage = (status, telework, note) => {
-  const text = ':check_mark: ' + status + (telework ? ` ${telework}` : '');
   const blocks = [];
 
+  let text = ':white_check_mark: ' + status;
+  if (telework) {
+    text += ' ' + telework;
+  }
   blocks.push({
     type: 'section',
     text: {
