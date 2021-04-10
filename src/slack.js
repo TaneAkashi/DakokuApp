@@ -4,7 +4,7 @@ const sendSuccessMessage = async (options, status = '', note = '', telework = ''
   const webhook = new IncomingWebhook(options.url);
   const blocks = [];
 
-  let text = ':check_mark: ' + status;
+  let text = ':white_check_mark: ' + status;
   if (telework) {
     text += ' ' + telework;
   }
