@@ -1,7 +1,18 @@
+import { Block, KnownBlock } from '@slack/types';
 import { IncomingWebhook } from '@slack/webhook';
 
-export const generateSuccessMessage = (status, note, telework) => {
-  const blocks = [];
+type SlackOptions = {
+  url: string;
+  icon_emoji: string;
+  username: string;
+};
+
+export const generateSuccessMessage = (
+  status: string,
+  note: string,
+  telework: string
+): { text: string; blocks: (Block | KnownBlock)[] } => {
+  const blocks: (Block | KnownBlock)[] = [];
 
   let text = ':white_check_mark: ' + status;
   if (telework) {
@@ -33,7 +44,11 @@ export const generateSuccessMessage = (status, note, telework) => {
   };
 };
 
-export const sendMessage = async (options, text = '', blocks = undefined) => {
+export const sendMessage = async (
+  options: SlackOptions,
+  text = '',
+  blocks?: (Block | KnownBlock)[]
+): Promise<ReturnType<InstanceType<typeof IncomingWebhook>['send']>> => {
   const webhook = new IncomingWebhook(options.url);
 
   return webhook.send({

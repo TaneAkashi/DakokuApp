@@ -1,17 +1,21 @@
 import path from 'path';
-import { Menu, Tray, app, shell } from 'electron';
+import { Menu, MenuItemConstructorOptions, MenuItem, Tray, app, shell } from 'electron';
 
-let tray = null;
+let tray: Tray | null = null;
 
-const getIcon = () => {
+const getIcon = (): string => {
   return process.env.NODE_ENV !== 'development'
     ? path.join(process.resourcesPath, 'img/TrayIconTemplate.png')
     : 'img/TrayIconTemplate.png';
 };
 const icon = getIcon();
 
-const generateMenu = (open, run, showDirectly) => {
-  const menu = [];
+const generateMenu = (
+  open: () => void,
+  run: (task: string) => Promise<void>,
+  showDirectly: boolean
+): (MenuItemConstructorOptions | MenuItem)[] => {
+  const menu: (MenuItemConstructorOptions | MenuItem)[] = [];
 
   menu.push(
     {
@@ -105,7 +109,7 @@ const generateMenu = (open, run, showDirectly) => {
   return menu;
 };
 
-export const initialize = (open, run, showDirectly) => {
+export const initialize = (open: () => void, run: (task: string) => Promise<void>, showDirectly: boolean): void => {
   if (tray) {
     tray.destroy();
   }

@@ -2,14 +2,18 @@ import path from 'path';
 import dakoku from 'akashi-dakoku-core';
 import { BrowserWindow, Notification, app, ipcMain, shell } from 'electron';
 import pie from 'puppeteer-in-electron';
+import { Browser } from 'puppeteer';
 import puppeteer from 'puppeteer-core';
+import { Block, KnownBlock } from '@slack/types';
 import * as slack from './slack';
 import * as sound from './sound';
 import * as store from './store';
 import * as tray from './tray';
 
-let browser = null;
-let mainWindow = null;
+export type TaskType = keyof ReturnType<typeof dakoku.dakoku>;
+
+let browser: Browser | null = null;
+let mainWindow: BrowserWindow | null = null;
 
 const main = async () => {
   store.initialize();
@@ -40,7 +44,10 @@ function closeWindow() {
   }
 }
 
-const runDakoku = async (task, options) => {
+const runDakoku = async (task: TaskType, options) => {
+  if (!browser) {
+    return;
+  }
   const window = new BrowserWindow({
     show: false,
   });
@@ -52,11 +59,24 @@ const runDakoku = async (task, options) => {
   return func(options);
 };
 
-const runDakokuByMenu = async (task) => {
+const runDakokuByMenu = async (task: TaskType): Promise<boid> => {
   const dakokuOptions = store.getDakokuOptions();
   const slackOptions = store.getSlackOptions();
 
-  const payload = await runDakoku(task, dakokuOptions)
+  type Payload = {
+    success: boolean;
+    soundType: TaskType | 'error';
+    notification: {
+      title: string;
+      body: string;
+    };
+    slack: {
+      text: string;
+      blocks?: (Block | KnownBlock)[];
+    };
+  };
+
+  const payload: Payload = await runDakoku(task, dakokuOptions)
     .then((result) => {
       return {
         success: true,

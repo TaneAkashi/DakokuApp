@@ -1,56 +1,59 @@
 import { ipcRenderer } from 'electron';
 
-const saveDakokuOptions = (email, password, company) => {
+const saveDakokuOptions = (email: string, password: string, company: string) => {
   return ipcRenderer.invoke('saveDakokuOptions', email, password, company);
 };
 
-const saveSlackOptions = (url, icon_emoji, username) => {
+const saveSlackOptions = (url: string, icon_emoji: string, username: string) => {
   return ipcRenderer.invoke('saveSlackOptions', url, icon_emoji, username);
 };
 
-const saveOtherOptions = (sound, showDirectly) => {
+const saveOtherOptions = (sound: boolean, showDirectly: boolean) => {
   return ipcRenderer.invoke('saveOtherOptions', sound, showDirectly);
 };
 
 window.addEventListener('DOMContentLoaded', () => {
   ipcRenderer.on('store-data', (event, options) => {
-    document.getElementById('email').value = options.username;
-    document.getElementById('office').value = options.company;
-    document.getElementById('slack-url').value = options.slack.url;
-    document.getElementById('slack-icon_emoji').value = options.slack.icon_emoji;
-    document.getElementById('slack-username').value = options.slack.username;
-    document.getElementById('sound').checked = options.sound;
-    document.getElementById('show-directly').checked = options.showDirectly;
+    (document.getElementById('email') as HTMLInputElement).value = options.username;
+    (document.getElementById('office') as HTMLInputElement).value = options.company;
+    (document.getElementById('slack-url') as HTMLInputElement).value = options.slack.url;
+    (document.getElementById('slack-icon_emoji') as HTMLInputElement).value = options.slack.icon_emoji;
+    (document.getElementById('slack-username') as HTMLInputElement).value = options.slack.username;
+    (document.getElementById('sound') as HTMLInputElement).checked = options.sound;
+    (document.getElementById('show-directly') as HTMLInputElement).checked = options.showDirectly;
   });
 
-  document.getElementById('form').addEventListener('submit', async (event) => {
+  (document.getElementById('form') as HTMLFormElement).addEventListener('submit', async (event) => {
     event.preventDefault();
     await saveDakokuOptions(
-      document.getElementById('email').value,
-      document.getElementById('password').value,
-      document.getElementById('office').value
+      (document.getElementById('email') as HTMLInputElement).value,
+      (document.getElementById('password') as HTMLInputElement).value,
+      (document.getElementById('office') as HTMLInputElement).value
     );
-    document.getElementById('password').value = '';
+    (document.getElementById('password') as HTMLInputElement).value = '';
     alert('保存しました');
   });
 
-  document.getElementById('slack').addEventListener('submit', async (event) => {
+  (document.getElementById('slack') as HTMLFormElement).addEventListener('submit', async (event) => {
     event.preventDefault();
     await saveSlackOptions(
-      document.getElementById('slack-url').value,
-      document.getElementById('slack-icon_emoji').value,
-      document.getElementById('slack-username').value
+      (document.getElementById('slack-url') as HTMLInputElement).value,
+      (document.getElementById('slack-icon_emoji') as HTMLInputElement).value,
+      (document.getElementById('slack-username') as HTMLInputElement).value
     );
     alert('保存しました');
   });
 
-  document.getElementById('other').addEventListener('submit', async (event) => {
+  (document.getElementById('other') as HTMLFormElement).addEventListener('submit', async (event) => {
     event.preventDefault();
-    await saveOtherOptions(document.getElementById('sound').checked, document.getElementById('show-directly').checked);
+    await saveOtherOptions(
+      (document.getElementById('sound') as HTMLInputElement).checked,
+      (document.getElementById('show-directly') as HTMLInputElement).checked
+    );
     alert('保存しました');
   });
 
-  document.getElementById('close').addEventListener('click', (event) => {
+  (document.getElementById('close') as HTMLButtonElement).addEventListener('click', (event) => {
     event.preventDefault();
     ipcRenderer.invoke('closeWindow');
   });
