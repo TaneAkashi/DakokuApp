@@ -53,22 +53,47 @@ const runDakoku = async (task, options) => {
 };
 
 const runDakokuByMenu = async (task) => {
-  const options = store.getDakokuOptions();
-  const result = await runDakoku(task, options);
-  if (store.getSound()) {
-    sound.play(task);
+  const dakokuOptions = store.getDakokuOptions();
+  const slackOptions = store.getSlackOptions();
+
+  const payload = await runDakoku(task, dakokuOptions)
+    .then((result) => {
+      return {
+        success: true,
+        soundType: task,
+        notification: {
+          title: result.status + (result.telework ? ` ${result.telework}` : ''),
+          body: result.note ? `アラート: ${result.note}` : '',
+        },
+        slack: slack.generateSuccessMessage(result.status, result.note, result.telework),
+      };
+    })
+    .catch((e) => {
+      const message = e instanceof Error ? e.message : '打刻に失敗しました';
+      return {
+        success: false,
+        soundType: 'error',
+        notification: {
+          title: message,
+          body: '',
+        },
+        slack: {
+          text: `:warning: ${message}`,
+        },
+      };
+    });
+
+  if (store.get('sound', false)) {
+    sound.play(payload.soundType);
   }
+
   const notification = new Notification({
-    title: result.status + (result.telework ? ` ${result.telework}` : ''),
-    body: result.note ? `アラート: ${result.note}` : '',
+    ...payload.notification,
     timeoutType: 'default',
   });
   notification.show();
 
-  const slackOptions = store.getSlackOptions();
-  if (slackOptions.url) {
-    await slack.sendSuccessMessage(slackOptions, result.status, result.note, result.telework);
-  }
+  await slack.sendMessage(slackOptions, payload.slack.text, payload.slack.blocks);
 };
 
 app.whenReady().then(() => {

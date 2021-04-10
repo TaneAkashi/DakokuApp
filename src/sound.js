@@ -21,6 +21,7 @@ const play = async (task = null) => {
       case 'restartWork': {
         return base + 'e01.mp3';
       }
+      case 'error':
       default: {
         return base + 'error.mp3';
       }
