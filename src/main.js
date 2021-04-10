@@ -94,7 +94,9 @@ const runDakokuByMenu = async (task) => {
   });
   notification.show();
 
-  await slack.sendMessage(slackOptions, payload.slack.text, payload.slack.blocks);
+  if (slackOptions.url) {
+    await slack.sendMessage(slackOptions, payload.slack.text, payload.slack.blocks);
+  }
 };
 
 const getOptions = () => ({
