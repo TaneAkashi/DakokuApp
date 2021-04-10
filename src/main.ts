@@ -1,5 +1,5 @@
 import path from 'path';
-import dakoku from 'akashi-dakoku-core';
+import * as dakoku from 'akashi-dakoku-core';
 import { BrowserWindow, Notification, app, ipcMain, shell } from 'electron';
 import pie from 'puppeteer-in-electron';
 import { Browser } from 'puppeteer';
