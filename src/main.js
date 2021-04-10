@@ -13,7 +13,7 @@ let mainWindow = null;
 
 const main = async () => {
   store.initialize();
-  const port = store.get('port', 9999);
+  const port = store.getPort();
   await pie.initialize(app, port);
   browser = await pie.connect(app, puppeteer);
 };
@@ -31,8 +31,7 @@ const openWindow = async () => {
     shell.openExternal(url);
   });
   await mainWindow.loadFile('src/index.html');
-  const { password, ...rest } = store.getStore();
-  mainWindow.webContents.send('store-data', rest);
+  mainWindow.webContents.send('store-data', store.getInitialOptions());
 };
 
 function closeWindow() {
@@ -54,7 +53,7 @@ const runDakoku = async (task, options) => {
 };
 
 const runDakokuByMenu = async (task) => {
-  const dakokuOptions = getOptions();
+  const dakokuOptions = store.getDakokuOptions();
   const slackOptions = store.getSlackOptions();
 
   const payload = await runDakoku(task, dakokuOptions)
@@ -84,7 +83,7 @@ const runDakokuByMenu = async (task) => {
       };
     });
 
-  if (store.get('sound', false)) {
+  if (store.getSound()) {
     sound.play(payload.soundType);
   }
 
@@ -99,33 +98,22 @@ const runDakokuByMenu = async (task) => {
   }
 };
 
-const getOptions = () => ({
-  username: store.get('username'),
-  password: store.get('password'),
-  company: store.get('company'),
-});
-
 app.whenReady().then(() => {
   ipcMain.handle('dakoku', (event, task, options) => {
     return runDakoku(task, options);
   });
 
   ipcMain.handle('saveDakokuOptions', (event, email, password, company) => {
-    store.set('username', email);
-    store.set('password', password);
-    store.set('company', company);
+    store.saveDakokuOptions(email, password, company);
   });
 
   ipcMain.handle('saveSlackOptions', (event, url, icon_emoji, username) => {
-    store.set('slack.url', url);
-    store.set('slack.icon_emoji', icon_emoji);
-    store.set('slack.username', username);
+    store.saveSlackOptions(url, icon_emoji, username);
   });
 
   ipcMain.handle('saveOtherOptions', (event, sound, showDirectly) => {
-    store.set('sound', sound);
-    store.set('showDirectly', showDirectly);
-    tray.initialize(openWindow, runDakokuByMenu, store.get('showDirectly'));
+    store.saveOtherOptions(sound, showDirectly);
+    tray.initialize(openWindow, runDakokuByMenu, store.getShowDirectly());
   });
 
   ipcMain.handle('closeWindow', () => {
@@ -141,10 +129,11 @@ app.whenReady().then(() => {
   const notification = new Notification();
   notification.close();
 
-  tray.initialize(openWindow, runDakokuByMenu, store.get('showDirectly'));
+  tray.initialize(openWindow, runDakokuByMenu, store.getShowDirectly());
 
   // 設定の登録がない場合はウィンドウを開く
-  if (!store.get('username') || !store.get('password') || !store.get('company')) {
+  const dakokuOptions = store.getDakokuOptions();
+  if (!dakokuOptions.username || !dakokuOptions.password || !dakokuOptions.company) {
     openWindow();
   }
 });
