@@ -83,7 +83,7 @@ const runDakokuByMenu = async (task) => {
       };
     });
 
-  if (store.get('sound', false)) {
+  if (store.getSound()) {
     sound.play(payload.soundType);
   }
 
