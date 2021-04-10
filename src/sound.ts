@@ -1,6 +1,6 @@
-const { BrowserWindow } = require('electron');
+import { BrowserWindow } from 'electron';
 
-const play = async (task = null) => {
+export const play = async (task = null) => {
   const window = new BrowserWindow({
     show: false,
   });
@@ -33,5 +33,3 @@ const play = async (task = null) => {
     window.close();
   }, 10000);
 };
-
-exports.play = play;

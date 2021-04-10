@@ -1,4 +1,4 @@
-const Store = require('electron-store');
+import Store from 'electron-store';
 
 let store = null;
 
@@ -50,24 +50,24 @@ const schema = {
   },
 };
 
-const initialize = () => {
+export const initialize = () => {
   store = new Store({ schema });
 };
 
-const getSound = () => {
+export const getSound = () => {
   return store.get('sound', false);
 };
 
-const getShowDirectly = () => {
+export const getShowDirectly = () => {
   return store.get('showDirectly', false);
 };
 
-const getPort = () => {
+export const getPort = () => {
   return store.get('port', 9999);
 };
 
-const getInitialOptions = () => {
-  const dakokuOptions = getDakokuOptions();
+export const getInitialOptions = () => {
+  export const dakokuOptions = getDakokuOptions();
 
   return {
     username: dakokuOptions.username,
@@ -78,7 +78,7 @@ const getInitialOptions = () => {
   };
 };
 
-const getDakokuOptions = () => {
+export const getDakokuOptions = () => {
   return {
     username: store.get('username'),
     password: store.get('password'),
@@ -86,13 +86,13 @@ const getDakokuOptions = () => {
   };
 };
 
-const saveDakokuOptions = (email, password, company) => {
+export const saveDakokuOptions = (email, password, company) => {
   store.set('username', email);
   store.set('password', password);
   store.set('company', company);
 };
 
-const getSlackOptions = () => {
+export const getSlackOptions = () => {
   return {
     url: store.get('slack.url') || '',
     icon_emoji: store.get('slack.icon_emoji') || undefined,
@@ -100,24 +100,13 @@ const getSlackOptions = () => {
   };
 };
 
-const saveSlackOptions = (url, icon_emoji, username) => {
+export const saveSlackOptions = (url, icon_emoji, username) => {
   store.set('slack.url', url);
   store.set('slack.icon_emoji', icon_emoji);
   store.set('slack.username', username);
 };
 
-const saveOtherOptions = (sound, showDirectly) => {
+export const saveOtherOptions = (sound, showDirectly) => {
   store.set('sound', sound);
   store.set('showDirectly', showDirectly);
 };
-
-exports.initialize = initialize;
-exports.getSound = getSound;
-exports.getShowDirectly = getShowDirectly;
-exports.getPort = getPort;
-exports.getInitialOptions = getInitialOptions;
-exports.getDakokuOptions = getDakokuOptions;
-exports.saveDakokuOptions = saveDakokuOptions;
-exports.getSlackOptions = getSlackOptions;
-exports.saveSlackOptions = saveSlackOptions;
-exports.saveOtherOptions = saveOtherOptions;

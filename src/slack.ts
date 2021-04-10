@@ -1,6 +1,6 @@
-const { IncomingWebhook } = require('@slack/webhook');
+import { IncomingWebhook } from '@slack/webhook';
 
-const generateSuccessMessage = (status, note, telework) => {
+export const generateSuccessMessage = (status, note, telework) => {
   const blocks = [];
 
   let text = ':white_check_mark: ' + status;
@@ -33,7 +33,7 @@ const generateSuccessMessage = (status, note, telework) => {
   };
 };
 
-const sendMessage = async (options, text = '', blocks = undefined) => {
+export const sendMessage = async (options, text = '', blocks = undefined) => {
   const webhook = new IncomingWebhook(options.url);
 
   return webhook.send({
@@ -43,6 +43,3 @@ const sendMessage = async (options, text = '', blocks = undefined) => {
     username: options.username,
   });
 };
-
-exports.generateSuccessMessage = generateSuccessMessage;
-exports.sendMessage = sendMessage;

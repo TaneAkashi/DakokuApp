@@ -1,12 +1,12 @@
-const { BrowserWindow, Notification, app, ipcMain, shell } = require('electron');
-const pie = require('puppeteer-in-electron');
-const puppeteer = require('puppeteer-core');
-const path = require('path');
-const dakoku = require('akashi-dakoku-core');
-const slack = require('./slack');
-const sound = require('./sound');
-const store = require('./store');
-const tray = require('./tray');
+import path from 'path';
+import dakoku from 'akashi-dakoku-core';
+import { BrowserWindow, Notification, app, ipcMain, shell } from 'electron';
+import pie from 'puppeteer-in-electron';
+import puppeteer from 'puppeteer-core';
+import * as slack from './slack';
+import * as sound from './sound';
+import * as store from './store';
+import * as tray from './tray';
 
 let browser = null;
 let mainWindow = null;

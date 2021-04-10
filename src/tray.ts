@@ -1,5 +1,5 @@
-const { Menu, Tray, app, shell } = require('electron');
-const path = require('path');
+import path from 'path';
+import { Menu, Tray, app, shell } from 'electron';
 
 let tray = null;
 
@@ -105,7 +105,7 @@ const generateMenu = (open, run, showDirectly) => {
   return menu;
 };
 
-const initialize = (open, run, showDirectly) => {
+export const initialize = (open, run, showDirectly) => {
   if (tray) {
     tray.destroy();
   }
@@ -114,5 +114,3 @@ const initialize = (open, run, showDirectly) => {
   const contextMenu = Menu.buildFromTemplate(generateMenu(open, run, showDirectly));
   tray.setContextMenu(contextMenu);
 };
-
-exports.initialize = initialize;

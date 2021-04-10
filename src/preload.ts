@@ -1,4 +1,4 @@
-const { ipcRenderer } = require('electron');
+import { ipcRenderer } from 'electron';
 
 const saveDakokuOptions = (email, password, company) => {
   return ipcRenderer.invoke('saveDakokuOptions', email, password, company);
