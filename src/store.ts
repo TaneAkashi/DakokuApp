@@ -64,22 +64,14 @@ const schema: Schema<SchemaType> = {
   },
 };
 
-type DakokuOptions = {
-  username: string;
-  password: string;
-  company: string;
-};
+type DakokuOptions = Pick<SchemaType, 'username' | 'password' | 'company'>;
 
-type SlackOptions = {
-  url: string;
-  icon_emoji: string;
-  username: string;
-};
+type SlackOptions = SchemaType['slack'];
 
 type InitialOptions = Pick<DakokuOptions, 'username' | 'company'> & {
   slack: SlackOptions;
-  sound: boolean;
-  showDirectly: boolean;
+  sound: SchemaType['sound'];
+  showDirectly: SchemaType['sound'];
 };
 
 export const initialize = (): void => {
