@@ -10,7 +10,7 @@ type SlackOptions = {
 export const generateSuccessMessage = (
   status: string,
   note: string,
-  telework: string
+  telework?: string
 ): { text: string; blocks: (Block | KnownBlock)[] } => {
   const blocks: (Block | KnownBlock)[] = [];
 
@@ -54,7 +54,7 @@ export const sendMessage = async (
   return webhook.send({
     text,
     blocks,
-    icon_emoji: options.icon_emoji,
-    username: options.username,
+    icon_emoji: options.icon_emoji || undefined,
+    username: options.username || undefined,
   });
 };

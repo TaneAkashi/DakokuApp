@@ -12,6 +12,12 @@ import * as tray from './tray';
 
 export type TaskType = keyof ReturnType<typeof dakoku.dakoku>;
 
+type DakokuOptions = {
+  username: string;
+  password: string;
+  company: string;
+};
+
 let browser: Browser | null = null;
 let mainWindow: BrowserWindow | null = null;
 
@@ -44,9 +50,9 @@ function closeWindow() {
   }
 }
 
-const runDakoku = async (task: TaskType, options) => {
+const runDakoku = async (task: TaskType, options: DakokuOptions): Promise<dakoku.Result> => {
   if (!browser) {
-    return;
+    throw new Error();
   }
   const window = new BrowserWindow({
     show: false,
@@ -59,7 +65,7 @@ const runDakoku = async (task: TaskType, options) => {
   return func(options);
 };
 
-const runDakokuByMenu = async (task: TaskType): Promise<boid> => {
+const runDakokuByMenu = async (task: TaskType): Promise<void> => {
   const dakokuOptions = store.getDakokuOptions();
   const slackOptions = store.getSlackOptions();
 

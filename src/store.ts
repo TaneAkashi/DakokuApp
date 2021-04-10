@@ -72,8 +72,8 @@ type DakokuOptions = {
 
 type SlackOptions = {
   url: string;
-  icon_emoji: string | undefined;
-  username: string | undefined;
+  icon_emoji: string;
+  username: string;
 };
 
 type InitialOptions = Pick<DakokuOptions, 'username' | 'company'> & {
@@ -133,8 +133,8 @@ export const getSlackOptions = (): SlackOptions => {
   if (!store) throw new Error();
   return {
     url: store.get('slack.url') || '',
-    icon_emoji: store.get('slack.icon_emoji') || undefined,
-    username: store.get('slack.username') || undefined,
+    icon_emoji: store.get('slack.icon_emoji'),
+    username: store.get('slack.username'),
   };
 };
 
