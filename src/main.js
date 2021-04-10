@@ -10,6 +10,7 @@ const tray = require('./tray');
 
 let browser = null;
 let mainWindow = null;
+let dakokuWindow = null;
 
 const main = async () => {
   store.initialize();
@@ -42,15 +43,31 @@ function closeWindow() {
 }
 
 const runDakoku = async (task, options) => {
-  const window = new BrowserWindow({
-    show: false,
-  });
-  const url = 'https://example.com/';
-  await window.loadURL(url);
-  const page = await pie.getPage(browser, window);
+  if (dakokuWindow) {
+    throw new Error('別の打刻が実行されています');
+  }
 
-  const func = dakoku.dakoku(page)[task];
-  return func(options);
+  try {
+    dakokuWindow = new BrowserWindow({
+      show: false,
+    });
+    const page = await pie.getPage(browser, dakokuWindow);
+
+    const func = dakoku.dakoku(page)[task];
+    const result = await func(options);
+
+    if (dakokuWindow) {
+      dakokuWindow.destroy();
+      dakokuWindow = null;
+    }
+    return result;
+  } catch (e) {
+    if (dakokuWindow) {
+      dakokuWindow.destroy();
+      dakokuWindow = null;
+    }
+    throw e;
+  }
 };
 
 const runDakokuByMenu = async (task) => {
