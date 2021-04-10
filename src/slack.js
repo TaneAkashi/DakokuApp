@@ -1,7 +1,6 @@
 const { IncomingWebhook } = require('@slack/webhook');
 
-const sendSuccessMessage = async (options, status = '', note = '', telework = '') => {
-  const webhook = new IncomingWebhook(options.url);
+const generateSuccessMessage = (status, note, telework) => {
   const blocks = [];
 
   let text = ':white_check_mark: ' + status;
@@ -28,13 +27,22 @@ const sendSuccessMessage = async (options, status = '', note = '', telework = ''
     });
   }
 
+  return {
+    text,
+    blocks,
+  };
+};
+
+const sendMessage = async (options, text = '', blocks = undefined) => {
+  const webhook = new IncomingWebhook(options.url);
+
   return webhook.send({
     text,
+    blocks,
     icon_emoji: options.icon_emoji,
     username: options.username,
-    color: 'good',
-    blocks,
   });
 };
 
-exports.sendSuccessMessage = sendSuccessMessage;
+exports.generateSuccessMessage = generateSuccessMessage;
+exports.sendMessage = sendMessage;
