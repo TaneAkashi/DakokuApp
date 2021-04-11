@@ -18,7 +18,7 @@ type DakokuOptions = {
   company: string;
 };
 
-let browser: Browser | null = null;
+let browser: Promise<Browser> | null = null;
 let mainWindow: BrowserWindow | null = null;
 let dakokuWindow: BrowserWindow | null = null;
 
@@ -26,7 +26,7 @@ const main = async () => {
   store.initialize();
   const port = store.getPort();
   await pie.initialize(app, port);
-  browser = await pie.connect(app, puppeteer);
+  browser = pie.connect(app, puppeteer);
 };
 
 const openWindow = async () => {
@@ -63,7 +63,7 @@ const runDakoku = async (task: TaskType, options: DakokuOptions): Promise<dakoku
     dakokuWindow = new BrowserWindow({
       show: false,
     });
-    const page = await pie.getPage(browser, dakokuWindow);
+    const page = await pie.getPage(await browser, dakokuWindow);
 
     const func = dakoku.dakoku(page)[task];
     const result = await func(options);
@@ -141,7 +141,7 @@ const runDakokuByMenu = async (task: TaskType): Promise<void> => {
   }
 };
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
   ipcMain.handle('dakoku', (event, task, options) => {
     return runDakoku(task, options);
   });
@@ -171,6 +171,9 @@ app.whenReady().then(() => {
   // 権限求める用
   const notification = new Notification();
   notification.close();
+
+  // ブラウザの初期化待機
+  await browser;
 
   tray.initialize(openWindow, runDakokuByMenu, store.getShowDirectly());
 
