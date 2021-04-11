@@ -22,7 +22,7 @@ let browser: Promise<Browser> | null = null;
 let mainWindow: BrowserWindow | null = null;
 let dakokuWindow: BrowserWindow | null = null;
 
-const main = async () => {
+const initialize = async () => {
   store.initialize();
   const port = store.getPort();
   await pie.initialize(app, port);
@@ -184,4 +184,4 @@ app.whenReady().then(async () => {
   }
 });
 
-main();
+initialize();
