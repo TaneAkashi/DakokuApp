@@ -8,9 +8,8 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 2018,
   },
-  extends: ['eslint:recommended', 'prettier', 'plugin:prettier/recommended'],
+  parser: '@typescript-eslint/parser',
+  extends: ['eslint:recommended', 'prettier', 'plugin:@typescript-eslint/recommended', 'plugin:prettier/recommended'],
   plugins: ['prettier'],
-  rules: {
-    'no-unused-vars': ['error', { ignoreRestSiblings: true }],
-  },
+  rules: {},
 };

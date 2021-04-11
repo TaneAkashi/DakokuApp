@@ -1,17 +1,22 @@
-const { Menu, Tray, app, shell } = require('electron');
-const path = require('path');
+import path from 'path';
+import { Menu, MenuItemConstructorOptions, MenuItem, Tray, app, shell } from 'electron';
+import { TaskType } from './main';
 
-let tray = null;
+let tray: Tray | null = null;
 
-const getIcon = () => {
+const getIcon = (): string => {
   return process.env.NODE_ENV !== 'development'
     ? path.join(process.resourcesPath, 'img/TrayIconTemplate.png')
     : 'img/TrayIconTemplate.png';
 };
 const icon = getIcon();
 
-const generateMenu = (open, run, showDirectly) => {
-  const menu = [];
+const generateMenu = (
+  open: () => void,
+  run: (task: TaskType) => Promise<void>,
+  showDirectly: boolean
+): (MenuItemConstructorOptions | MenuItem)[] => {
+  const menu: (MenuItemConstructorOptions | MenuItem)[] = [];
 
   menu.push(
     {
@@ -105,7 +110,7 @@ const generateMenu = (open, run, showDirectly) => {
   return menu;
 };
 
-const initialize = (open, run, showDirectly) => {
+export const initialize = (open: () => void, run: (task: TaskType) => Promise<void>, showDirectly: boolean): void => {
   if (tray) {
     tray.destroy();
   }
@@ -114,5 +119,3 @@ const initialize = (open, run, showDirectly) => {
   const contextMenu = Menu.buildFromTemplate(generateMenu(open, run, showDirectly));
   tray.setContextMenu(contextMenu);
 };
-
-exports.initialize = initialize;

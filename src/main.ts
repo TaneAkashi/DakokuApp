@@ -1,20 +1,30 @@
-const { BrowserWindow, Notification, app, ipcMain, shell } = require('electron');
-const pie = require('puppeteer-in-electron');
-const puppeteer = require('puppeteer-core');
-const path = require('path');
-const dakoku = require('akashi-dakoku-core');
-const slack = require('./slack');
-const sound = require('./sound');
-const store = require('./store');
-const tray = require('./tray');
+import path from 'path';
+import * as dakoku from 'akashi-dakoku-core';
+import { BrowserWindow, Notification, app, ipcMain, shell } from 'electron';
+import pie from 'puppeteer-in-electron';
+import { Browser } from 'puppeteer';
+import puppeteer from 'puppeteer-core';
+import { Block, KnownBlock } from '@slack/types';
+import * as slack from './slack';
+import * as sound from './sound';
+import * as store from './store';
+import * as tray from './tray';
 
-let browser = null;
-let mainWindow = null;
-let dakokuWindow = null;
+export type TaskType = keyof ReturnType<typeof dakoku.dakoku>;
+
+type DakokuOptions = {
+  username: string;
+  password: string;
+  company: string;
+};
+
+let browser: Browser | null = null;
+let mainWindow: BrowserWindow | null = null;
+let dakokuWindow: BrowserWindow | null = null;
 
 const main = async () => {
   store.initialize();
-  const port = store.get('port', 9999);
+  const port = store.getPort();
   await pie.initialize(app, port);
   browser = await pie.connect(app, puppeteer);
 };
@@ -31,9 +41,8 @@ const openWindow = async () => {
     event.preventDefault();
     shell.openExternal(url);
   });
-  await mainWindow.loadFile('src/index.html');
-  const { password, ...rest } = store.getStore();
-  mainWindow.webContents.send('store-data', rest);
+  await mainWindow.loadFile('templates/index.html');
+  mainWindow.webContents.send('store-data', store.getInitialOptions());
 };
 
 function closeWindow() {
@@ -42,7 +51,10 @@ function closeWindow() {
   }
 }
 
-const runDakoku = async (task, options) => {
+const runDakoku = async (task: TaskType, options: DakokuOptions): Promise<dakoku.Result> => {
+  if (!browser) {
+    throw new Error('browser is not initialized.');
+  }
   if (dakokuWindow) {
     throw new Error('別の打刻が実行されています');
   }
@@ -70,11 +82,24 @@ const runDakoku = async (task, options) => {
   }
 };
 
-const runDakokuByMenu = async (task) => {
-  const dakokuOptions = getOptions();
+const runDakokuByMenu = async (task: TaskType): Promise<void> => {
+  const dakokuOptions = store.getDakokuOptions();
   const slackOptions = store.getSlackOptions();
 
-  const payload = await runDakoku(task, dakokuOptions)
+  type Payload = {
+    success: boolean;
+    soundType: TaskType | 'error';
+    notification: {
+      title: string;
+      body: string;
+    };
+    slack: {
+      text: string;
+      blocks?: (Block | KnownBlock)[];
+    };
+  };
+
+  const payload: Payload = await runDakoku(task, dakokuOptions)
     .then((result) => {
       return {
         success: true,
@@ -101,7 +126,7 @@ const runDakokuByMenu = async (task) => {
       };
     });
 
-  if (store.get('sound', false)) {
+  if (store.getSound()) {
     sound.play(payload.soundType);
   }
 
@@ -111,14 +136,10 @@ const runDakokuByMenu = async (task) => {
   });
   notification.show();
 
-  await slack.sendMessage(slackOptions, payload.slack.text, payload.slack.blocks);
+  if (slackOptions.url) {
+    await slack.sendMessage(slackOptions, payload.slack.text, payload.slack.blocks);
+  }
 };
-
-const getOptions = () => ({
-  username: store.get('username'),
-  password: store.get('password'),
-  company: store.get('company'),
-});
 
 app.whenReady().then(() => {
   ipcMain.handle('dakoku', (event, task, options) => {
@@ -126,21 +147,16 @@ app.whenReady().then(() => {
   });
 
   ipcMain.handle('saveDakokuOptions', (event, email, password, company) => {
-    store.set('username', email);
-    store.set('password', password);
-    store.set('company', company);
+    store.saveDakokuOptions(email, password, company);
   });
 
   ipcMain.handle('saveSlackOptions', (event, url, icon_emoji, username) => {
-    store.set('slack.url', url);
-    store.set('slack.icon_emoji', icon_emoji);
-    store.set('slack.username', username);
+    store.saveSlackOptions(url, icon_emoji, username);
   });
 
   ipcMain.handle('saveOtherOptions', (event, sound, showDirectly) => {
-    store.set('sound', sound);
-    store.set('showDirectly', showDirectly);
-    tray.initialize(openWindow, runDakokuByMenu, store.get('showDirectly'));
+    store.saveOtherOptions(sound, showDirectly);
+    tray.initialize(openWindow, runDakokuByMenu, store.getShowDirectly());
   });
 
   ipcMain.handle('closeWindow', () => {
@@ -156,10 +172,11 @@ app.whenReady().then(() => {
   const notification = new Notification();
   notification.close();
 
-  tray.initialize(openWindow, runDakokuByMenu, store.get('showDirectly'));
+  tray.initialize(openWindow, runDakokuByMenu, store.getShowDirectly());
 
   // 設定の登録がない場合はウィンドウを開く
-  if (!store.get('username') || !store.get('password') || !store.get('company')) {
+  const dakokuOptions = store.getDakokuOptions();
+  if (!dakokuOptions.username || !dakokuOptions.password || !dakokuOptions.company) {
     openWindow();
   }
 });
