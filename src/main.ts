@@ -18,7 +18,7 @@ type DakokuOptions = {
   company: string;
 };
 
-let browser: Promise<Browser> | null = null;
+let browser: Browser | null = null;
 let mainWindow: BrowserWindow | null = null;
 let dakokuWindow: BrowserWindow | null = null;
 
@@ -26,8 +26,9 @@ const initialize = async () => {
   store.initialize();
   const port = store.getPort();
   await pie.initialize(app, port);
-  browser = pie.connect(app, puppeteer);
+  browser = await pie.connect(app, puppeteer);
 };
+const initializePromise = initialize();
 
 const openWindow = async () => {
   mainWindow = new BrowserWindow({
@@ -170,8 +171,8 @@ app.whenReady().then(async () => {
   const notification = new Notification();
   notification.close();
 
-  // ブラウザの初期化待機
-  await browser;
+  // 初期化処理待機
+  await initializePromise;
 
   tray.initialize(openWindow, runDakokuByMenu, store.getShowDirectly());
 
@@ -181,5 +182,3 @@ app.whenReady().then(async () => {
     openWindow();
   }
 });
-
-initialize();
