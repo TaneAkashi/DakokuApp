@@ -31,6 +31,11 @@ const initialize = async () => {
 const initializePromise = initialize();
 
 const openWindow = async () => {
+  if (mainWindow) {
+    mainWindow.focus();
+    return;
+  }
+
   mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
@@ -44,6 +49,9 @@ const openWindow = async () => {
   });
   await mainWindow.loadFile('templates/index.html');
   mainWindow.webContents.send('store-data', store.getInitialOptions());
+  mainWindow.on('close', () => {
+    mainWindow = null;
+  });
 };
 
 function closeWindow() {
