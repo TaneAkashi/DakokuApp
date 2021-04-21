@@ -32,6 +32,7 @@ const initializePromise = initialize();
 
 const openWindow = async () => {
   if (mainWindow) {
+    mainWindow.show();
     mainWindow.focus();
     return;
   }
