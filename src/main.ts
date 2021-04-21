@@ -49,7 +49,7 @@ const openWindow = async () => {
   });
   await mainWindow.loadFile('templates/index.html');
   mainWindow.webContents.send('store-data', store.getInitialOptions());
-  mainWindow.on('close', () => {
+  mainWindow.on('closed', () => {
     mainWindow = null;
   });
 };
