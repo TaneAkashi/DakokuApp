@@ -20,15 +20,23 @@ type DakokuOptions = {
 
 let browser: Browser | null = null;
 let mainWindow: BrowserWindow | null = null;
+let dakokuWindow: BrowserWindow | null = null;
 
-const main = async () => {
+const initialize = async () => {
   store.initialize();
   const port = store.getPort();
   await pie.initialize(app, port);
   browser = await pie.connect(app, puppeteer);
 };
+const initializePromise = initialize();
 
 const openWindow = async () => {
+  if (mainWindow) {
+    mainWindow.show();
+    mainWindow.focus();
+    return;
+  }
+
   mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
@@ -42,6 +50,9 @@ const openWindow = async () => {
   });
   await mainWindow.loadFile('templates/index.html');
   mainWindow.webContents.send('store-data', store.getInitialOptions());
+  mainWindow.on('closed', () => {
+    mainWindow = null;
+  });
 };
 
 function closeWindow() {
@@ -54,15 +65,29 @@ const runDakoku = async (task: TaskType, options: DakokuOptions): Promise<dakoku
   if (!browser) {
     throw new Error('browser is not initialized.');
   }
-  const window = new BrowserWindow({
-    show: false,
-  });
-  const url = 'https://example.com/';
-  await window.loadURL(url);
-  const page = await pie.getPage(browser, window);
+  if (dakokuWindow) {
+    throw new Error('別の打刻が実行されています');
+  }
 
-  const func = dakoku.dakoku(page)[task];
-  return func(options);
+  try {
+    dakokuWindow = new BrowserWindow({
+      show: false,
+    });
+    const page = await pie.getPage(await browser, dakokuWindow);
+    const result = await dakoku.dakoku(page)[task](options);
+
+    if (dakokuWindow) {
+      dakokuWindow.destroy();
+      dakokuWindow = null;
+    }
+    return result;
+  } catch (e) {
+    if (dakokuWindow) {
+      dakokuWindow.destroy();
+      dakokuWindow = null;
+    }
+    throw e;
+  }
 };
 
 const runDakokuByMenu = async (task: TaskType): Promise<void> => {
@@ -124,7 +149,7 @@ const runDakokuByMenu = async (task: TaskType): Promise<void> => {
   }
 };
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
   ipcMain.handle('dakoku', (event, task, options) => {
     return runDakoku(task, options);
   });
@@ -155,6 +180,9 @@ app.whenReady().then(() => {
   const notification = new Notification();
   notification.close();
 
+  // 初期化処理待機
+  await initializePromise;
+
   tray.initialize(openWindow, runDakokuByMenu, store.getShowDirectly());
 
   // 設定の登録がない場合はウィンドウを開く
@@ -163,5 +191,3 @@ app.whenReady().then(() => {
     openWindow();
   }
 });
-
-main();
