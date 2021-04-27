@@ -26,6 +26,7 @@ const initialize = async () => {
   store.initialize();
   const port = store.getPort();
   await pie.initialize(app, port);
+  browser = await pie.connect(app, puppeteer);
 };
 const initializePromise = initialize();
 
@@ -61,8 +62,6 @@ function closeWindow() {
 }
 
 const runDakoku = async (task: TaskType, options: DakokuOptions): Promise<dakoku.Result> => {
-  browser = await pie.connect(app, puppeteer);
-
   if (!browser) {
     throw new Error('browser is not initialized.');
   }
