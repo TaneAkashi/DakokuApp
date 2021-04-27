@@ -1,6 +1,7 @@
 import path from 'path';
 import { Menu, MenuItemConstructorOptions, MenuItem, Tray, app, shell } from 'electron';
 import { TaskType } from './main';
+import * as release from './release';
 
 let tray: Tray | null = null;
 
@@ -14,7 +15,8 @@ const icon = getIcon();
 const generateMenu = (
   open: () => void,
   run: (task: TaskType) => Promise<void>,
-  showDirectly: boolean
+  showDirectly: boolean,
+  _release: release.Release | null
 ): (MenuItemConstructorOptions | MenuItem)[] => {
   const menu: (MenuItemConstructorOptions | MenuItem)[] = [];
 
@@ -99,23 +101,37 @@ const generateMenu = (
       click: () => {
         shell.openExternal('https://atnd.ak4.jp/login');
       },
-    },
-    {
-      type: 'normal',
-      label: '終了',
-      click: app.quit,
     }
   );
+  if (_release) {
+    menu.push({
+      type: 'normal',
+      label: `🌟DakokuApp: ${release.getName(_release)}を入手する🌟`,
+      click: () => {
+        shell.openExternal(release.getHtmlUrl(_release));
+      },
+    });
+  }
+  menu.push({
+    type: 'normal',
+    label: '終了',
+    click: app.quit,
+  });
 
   return menu;
 };
 
-export const initialize = (open: () => void, run: (task: TaskType) => Promise<void>, showDirectly: boolean): void => {
+export const initialize = (
+  open: () => void,
+  run: (task: TaskType) => Promise<void>,
+  showDirectly: boolean,
+  _release: release.Release | null = null
+): void => {
   if (tray) {
     tray.destroy();
   }
 
   tray = new Tray(icon);
-  const contextMenu = Menu.buildFromTemplate(generateMenu(open, run, showDirectly));
+  const contextMenu = Menu.buildFromTemplate(generateMenu(open, run, showDirectly, _release));
   tray.setContextMenu(contextMenu);
 };
