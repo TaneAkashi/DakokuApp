@@ -1,6 +1,11 @@
 import Store, { Schema } from 'electron-store';
 import { Release } from './release';
 
+export type StoreRelease = Pick<
+  Release,
+  'html_url' | 'id' | 'node_id' | 'tag_name' | 'name' | 'draft' | 'prerelease' | 'body'
+>;
+
 type SchemaType = {
   username: string;
   password: string;
@@ -13,7 +18,7 @@ type SchemaType = {
     icon_emoji: string;
     username: string;
   };
-  release: Release;
+  release: StoreRelease;
 };
 
 let store: Store<SchemaType> | null = null;
@@ -111,12 +116,6 @@ export const getInitialOptions = (): InitialOptions => {
   };
 };
 
-export const getRelease = (): Release | null => {
-  if (!store) throw new Error('store is not initialized.');
-  // electron-store schema は object | null のような型を取れないので undefined を null とみなして扱う
-  return store.get('release') || null;
-};
-
 export const getDakokuOptions = (): DakokuOptions => {
   if (!store) throw new Error('store is not initialized.');
   return {
@@ -124,6 +123,12 @@ export const getDakokuOptions = (): DakokuOptions => {
     password: store.get('password'),
     company: store.get('company'),
   };
+};
+
+export const getRelease = (): StoreRelease | null => {
+  if (!store) throw new Error('store is not initialized.');
+  // electron-store schema は object | null のような型を取れないので undefined を null とみなして扱う
+  return store.get('release') || null;
 };
 
 export const saveDakokuOptions = (email: string, password: string, company: string): void => {
@@ -155,7 +160,7 @@ export const saveOtherOptions = (sound: boolean, showDirectly: boolean): void =>
   store.set('showDirectly', showDirectly);
 };
 
-export const saveRelease = (release: Release | null): void => {
+export const saveRelease = (release: StoreRelease | null): void => {
   if (!store) throw new Error('store is not initialized.');
   // electron-store schema は object | null のような型を取れないので undefined を null とみなして扱う
   store.set('release', release || undefined);

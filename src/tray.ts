@@ -1,7 +1,7 @@
 import path from 'path';
 import { Menu, MenuItemConstructorOptions, MenuItem, Tray, app, shell } from 'electron';
 import { TaskType } from './main';
-import * as release from './release';
+import { StoreRelease } from './store';
 
 let tray: Tray | null = null;
 
@@ -16,7 +16,7 @@ const generateMenu = (
   open: () => void,
   run: (task: TaskType) => Promise<void>,
   showDirectly: boolean,
-  _release: release.Release | null
+  release: StoreRelease | null
 ): (MenuItemConstructorOptions | MenuItem)[] => {
   const menu: (MenuItemConstructorOptions | MenuItem)[] = [];
 
@@ -103,12 +103,12 @@ const generateMenu = (
       },
     }
   );
-  if (_release) {
+  if (release) {
     menu.push({
       type: 'normal',
-      label: `🌟DakokuApp: ${release.getName(_release)}を入手する🌟`,
+      label: `🌟DakokuApp: ${release.name}を入手する🌟`,
       click: () => {
-        shell.openExternal(release.getHtmlUrl(_release));
+        shell.openExternal(release.html_url);
       },
     });
   }
@@ -125,13 +125,13 @@ export const initialize = (
   open: () => void,
   run: (task: TaskType) => Promise<void>,
   showDirectly: boolean,
-  _release: release.Release | null = null
+  release: StoreRelease | null = null
 ): void => {
   if (tray) {
     tray.destroy();
   }
 
   tray = new Tray(icon);
-  const contextMenu = Menu.buildFromTemplate(generateMenu(open, run, showDirectly, _release));
+  const contextMenu = Menu.buildFromTemplate(generateMenu(open, run, showDirectly, release));
   tray.setContextMenu(contextMenu);
 };

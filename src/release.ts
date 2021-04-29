@@ -49,6 +49,3 @@ export const fetchLatest = async (): Promise<Release | null> => {
     .catch(() => null);
   return version;
 };
-
-export const getName = (release: Release | null): string => (release ? release.name : '');
-export const getHtmlUrl = (release: Release | null): string => (release ? release.name : '');
