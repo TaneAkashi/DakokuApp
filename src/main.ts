@@ -80,13 +80,13 @@ const runDakoku = async (task: TaskType, options: DakokuOptions): Promise<dakoku
       dakokuWindow.destroy();
       dakokuWindow = null;
     }
-    return result;
+    return Promise.resolve(result);
   } catch (e) {
     if (dakokuWindow) {
       dakokuWindow.destroy();
       dakokuWindow = null;
     }
-    throw e;
+    return Promise.reject(e);
   }
 };
 
