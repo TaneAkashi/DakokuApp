@@ -10,11 +10,6 @@ export const initialize = async (app: App, port: number): Promise<void> => {
   browser = await pie.connect(app, puppeteer);
 };
 
-export const getBrowser = (): Browser => {
-  if (!browser) throw new Error('browser is not initialized.');
-  return browser;
-};
-
 export const getPage = (win: BrowserWindow): Promise<Page> => {
   if (!browser) throw new Error('browser is not initialized.');
   return pie.getPage(browser, win);
