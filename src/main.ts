@@ -2,7 +2,7 @@ import path from 'path';
 import * as dakoku from 'akashi-dakoku-core';
 import { BrowserWindow, Notification, app, ipcMain, shell } from 'electron';
 import { Block, KnownBlock } from '@slack/types';
-import * as browser from './pptr';
+import * as pptr from './pptr';
 import * as slack from './slack';
 import * as sound from './sound';
 import * as store from './store';
@@ -22,7 +22,7 @@ let dakokuWindow: BrowserWindow | null = null;
 const initialize = async () => {
   store.initialize();
   const port = store.getPort();
-  await browser.initialize(app, port);
+  await pptr.initialize(app, port);
 };
 const initializePromise = initialize();
 
@@ -66,7 +66,7 @@ const runDakoku = async (task: TaskType, options: DakokuOptions): Promise<dakoku
     dakokuWindow = new BrowserWindow({
       show: false,
     });
-    const page = await browser.getPage(dakokuWindow);
+    const page = await pptr.getPage(dakokuWindow);
     const result = await dakoku.dakoku(page)[task](options);
 
     if (dakokuWindow) {
