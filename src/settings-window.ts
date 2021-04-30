@@ -2,35 +2,35 @@ import path from 'path';
 import { BrowserWindow, shell } from 'electron';
 import * as store from './store';
 
-let mainWindow: BrowserWindow | null = null;
+let win: BrowserWindow | null = null;
 
 export const open = async (): Promise<void> => {
-  if (mainWindow) {
-    mainWindow.show();
-    mainWindow.focus();
+  if (win) {
+    win.show();
+    win.focus();
     return;
   }
 
-  mainWindow = new BrowserWindow({
+  win = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
     },
   });
-  mainWindow.webContents.on('new-window', (event, url) => {
+  win.webContents.on('new-window', (event, url) => {
     event.preventDefault();
     shell.openExternal(url);
   });
-  await mainWindow.loadFile('templates/index.html');
-  mainWindow.webContents.send('store-data', store.getInitialOptions());
-  mainWindow.on('closed', () => {
-    mainWindow = null;
+  await win.loadFile('templates/index.html');
+  win.webContents.send('store-data', store.getInitialOptions());
+  win.on('closed', () => {
+    win = null;
   });
 };
 
 export const close = (): void => {
-  if (mainWindow) {
-    mainWindow.close();
+  if (win) {
+    win.close();
   }
 };
