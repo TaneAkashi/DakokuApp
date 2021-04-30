@@ -1,6 +1,7 @@
 import path from 'path';
 import { BrowserWindow, Notification, app, ipcMain, shell } from 'electron';
 import * as dakoku from './dakoku';
+import * as pptr from './pptr';
 import * as store from './store';
 import * as tray from './tray';
 
