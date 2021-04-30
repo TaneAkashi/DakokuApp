@@ -14,25 +14,25 @@ type Options = {
   company: string;
 };
 
-let dakokuWindow: BrowserWindow | null = null;
+let win: BrowserWindow | null = null;
 
 const destroyWindow = () => {
-  if (dakokuWindow) {
-    dakokuWindow.destroy();
-    dakokuWindow = null;
+  if (win) {
+    win.destroy();
+    win = null;
   }
 };
 
 export const run = async (task: TaskType, options: Options): Promise<akashi.Result> => {
-  if (dakokuWindow) {
+  if (win) {
     throw new Error('別の打刻が実行されています');
   }
 
   try {
-    dakokuWindow = new BrowserWindow({
+    win = new BrowserWindow({
       show: false,
     });
-    const page = await pptr.getPage(dakokuWindow);
+    const page = await pptr.getPage(win);
     const result = await akashi.dakoku(page)[task](options);
     destroyWindow();
     return result;
