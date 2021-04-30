@@ -2,7 +2,7 @@ import path from 'path';
 import * as dakoku from 'akashi-dakoku-core';
 import { BrowserWindow, Notification, app, ipcMain, shell } from 'electron';
 import { Block, KnownBlock } from '@slack/types';
-import * as browser from './browser';
+import * as browser from './pptr';
 import * as slack from './slack';
 import * as sound from './sound';
 import * as store from './store';
