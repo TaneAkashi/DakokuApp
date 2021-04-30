@@ -1,5 +1,6 @@
 import * as akashi from 'akashi-dakoku-core';
 import { BrowserWindow, Notification } from 'electron';
+import pie from 'puppeteer-in-electron';
 import { Block, KnownBlock } from '@slack/types';
 import * as browser from './browser';
 import * as slack from './slack';
@@ -17,6 +18,8 @@ type Options = {
 let dakokuWindow: BrowserWindow | null = null;
 
 export const run = async (task: TaskType, options: Options): Promise<akashi.Result> => {
+  const pptrBrowser = browser.get();
+
   if (dakokuWindow) {
     throw new Error('別の打刻が実行されています');
   }
@@ -25,7 +28,7 @@ export const run = async (task: TaskType, options: Options): Promise<akashi.Resu
     dakokuWindow = new BrowserWindow({
       show: false,
     });
-    const page = await browser.getPage(dakokuWindow);
+    const page = await pie.getPage(pptrBrowser, dakokuWindow);
     const result = await akashi.dakoku(page)[task](options);
 
     if (dakokuWindow) {
