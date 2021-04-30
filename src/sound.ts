@@ -1,5 +1,5 @@
 import { BrowserWindow } from 'electron';
-import { TaskType } from './dakoku';
+import { TaskType } from './main';
 
 export const play = async (task: TaskType | 'error' = 'error'): Promise<void> => {
   const window = new BrowserWindow({
