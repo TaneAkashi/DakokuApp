@@ -45,10 +45,6 @@ const closeWindow = () => {
 };
 
 app.whenReady().then(async () => {
-  ipcMain.handle('dakoku', (event, task, options) => {
-    return dakoku.run(task, options);
-  });
-
   ipcMain.handle('saveDakokuOptions', (event, email, password, company) => {
     store.saveDakokuOptions(email, password, company);
   });
