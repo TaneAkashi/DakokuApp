@@ -1,7 +1,6 @@
 import path from 'path';
 import * as dakoku from 'akashi-dakoku-core';
 import { BrowserWindow, Notification, app, ipcMain, shell } from 'electron';
-import pie from 'puppeteer-in-electron';
 import { Block, KnownBlock } from '@slack/types';
 import * as browser from './browser';
 import * as slack from './slack';
@@ -59,8 +58,6 @@ const closeWindow = () => {
 };
 
 const runDakoku = async (task: TaskType, options: DakokuOptions): Promise<dakoku.Result> => {
-  const pptrBrowser = browser.get();
-
   if (dakokuWindow) {
     throw new Error('別の打刻が実行されています');
   }
@@ -69,7 +66,7 @@ const runDakoku = async (task: TaskType, options: DakokuOptions): Promise<dakoku
     dakokuWindow = new BrowserWindow({
       show: false,
     });
-    const page = await pie.getPage(pptrBrowser, dakokuWindow);
+    const page = await browser.getPage(dakokuWindow);
     const result = await dakoku.dakoku(page)[task](options);
 
     if (dakokuWindow) {
