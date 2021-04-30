@@ -1,5 +1,6 @@
-import { BrowserWindow, Notification, app, ipcMain } from 'electron';
+import { BrowserWindow, Notification, app } from 'electron';
 import * as dakoku from './dakoku';
+import * as ipc from './ipc';
 import * as pptr from './pptr';
 import * as settingsWindow from './settings-window';
 import * as store from './store';
@@ -13,22 +14,8 @@ const initialize = async () => {
 const initializePromise = initialize();
 
 app.whenReady().then(async () => {
-  ipcMain.handle('saveDakokuOptions', (event, email, password, company) => {
-    store.saveDakokuOptions(email, password, company);
-  });
-
-  ipcMain.handle('saveSlackOptions', (event, url, icon_emoji, username) => {
-    store.saveSlackOptions(url, icon_emoji, username);
-  });
-
-  ipcMain.handle('saveOtherOptions', (event, sound, showDirectly) => {
-    store.saveOtherOptions(sound, showDirectly);
-    tray.initialize(settingsWindow.open, dakoku.runByMenu, store.getShowDirectly());
-  });
-
-  ipcMain.handle('closeWindow', () => {
-    settingsWindow.close();
-  });
+  // ipcMain.handle 登録
+  ipc.subscribe();
 
   // これがないとなぜかSlack通知失敗する
   new BrowserWindow({
