@@ -62,6 +62,10 @@ function closeWindow() {
 }
 
 const runDakoku = async (task: TaskType, options: DakokuOptions): Promise<dakoku.Result> => {
+  const timer = setTimeout(() => {
+    return Promise.reject(new Error('タイムアウト'));
+  }, 10000);
+
   if (!browser) {
     throw new Error('browser is not initialized.');
   }
@@ -80,12 +84,14 @@ const runDakoku = async (task: TaskType, options: DakokuOptions): Promise<dakoku
       dakokuWindow.destroy();
       dakokuWindow = null;
     }
+    clearTimeout(timer);
     return Promise.resolve(result);
   } catch (e) {
     if (dakokuWindow) {
       dakokuWindow.destroy();
       dakokuWindow = null;
     }
+    clearTimeout(timer);
     return Promise.reject(e);
   }
 };
