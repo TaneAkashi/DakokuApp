@@ -29,6 +29,7 @@ app.whenReady().then(async () => {
   // 初期化処理待機
   await initializePromise;
 
+  // Tray 表示
   tray.initialize(settingsWindow.open, dakoku.runByMenu, store.getShowDirectly());
 
   // 設定の登録がない場合はウィンドウを開く
