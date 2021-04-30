@@ -62,6 +62,7 @@ function closeWindow() {
 }
 
 const runDakoku = async (task: TaskType, options: DakokuOptions): Promise<dakoku.Result> => {
+  // 10秒でタイムアウトでエラーにする
   const timer = setTimeout(() => {
     return Promise.reject(new Error('タイムアウト'));
   }, 10000);
