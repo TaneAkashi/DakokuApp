@@ -39,11 +39,11 @@ const openWindow = async () => {
   });
 };
 
-function closeWindow() {
+const closeWindow = () => {
   if (mainWindow) {
     mainWindow.close();
   }
-}
+};
 
 app.whenReady().then(async () => {
   ipcMain.handle('dakoku', (event, task, options) => {
