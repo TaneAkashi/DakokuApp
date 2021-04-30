@@ -2,9 +2,8 @@ import path from 'path';
 import * as dakoku from 'akashi-dakoku-core';
 import { BrowserWindow, Notification, app, ipcMain, shell } from 'electron';
 import pie from 'puppeteer-in-electron';
-import { Browser } from 'puppeteer';
-import puppeteer from 'puppeteer-core';
 import { Block, KnownBlock } from '@slack/types';
+import * as browser from './browser';
 import * as slack from './slack';
 import * as sound from './sound';
 import * as store from './store';
@@ -18,15 +17,13 @@ type DakokuOptions = {
   company: string;
 };
 
-let browser: Browser | null = null;
 let mainWindow: BrowserWindow | null = null;
 let dakokuWindow: BrowserWindow | null = null;
 
 const initialize = async () => {
   store.initialize();
   const port = store.getPort();
-  await pie.initialize(app, port);
-  browser = await pie.connect(app, puppeteer);
+  await browser.initialize(app, port);
 };
 const initializePromise = initialize();
 
@@ -62,9 +59,8 @@ function closeWindow() {
 }
 
 const runDakoku = async (task: TaskType, options: DakokuOptions): Promise<dakoku.Result> => {
-  if (!browser) {
-    throw new Error('browser is not initialized.');
-  }
+  const pptrBrowser = browser.get();
+
   if (dakokuWindow) {
     throw new Error('別の打刻が実行されています');
   }
@@ -73,7 +69,7 @@ const runDakoku = async (task: TaskType, options: DakokuOptions): Promise<dakoku
     dakokuWindow = new BrowserWindow({
       show: false,
     });
-    const page = await pie.getPage(await browser, dakokuWindow);
+    const page = await pie.getPage(pptrBrowser, dakokuWindow);
     const result = await dakoku.dakoku(page)[task](options);
 
     if (dakokuWindow) {
