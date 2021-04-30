@@ -16,13 +16,6 @@ type Options = {
 
 let dakokuWindow: BrowserWindow | null = null;
 
-const destroyWindow = () => {
-  if (dakokuWindow) {
-    dakokuWindow.destroy();
-    dakokuWindow = null;
-  }
-};
-
 export const run = async (task: TaskType, options: Options): Promise<akashi.Result> => {
   if (dakokuWindow) {
     throw new Error('別の打刻が実行されています');
@@ -34,10 +27,17 @@ export const run = async (task: TaskType, options: Options): Promise<akashi.Resu
     });
     const page = await browser.getPage(dakokuWindow);
     const result = await akashi.dakoku(page)[task](options);
-    destroyWindow();
+
+    if (dakokuWindow) {
+      dakokuWindow.destroy();
+      dakokuWindow = null;
+    }
     return result;
   } catch (e) {
-    destroyWindow();
+    if (dakokuWindow) {
+      dakokuWindow.destroy();
+      dakokuWindow = null;
+    }
     throw e;
   }
 };
