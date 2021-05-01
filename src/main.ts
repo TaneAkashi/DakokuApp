@@ -170,7 +170,6 @@ app.whenReady().then(async () => {
       }
 
       store.saveDakokuOptions(email, password, company);
-
       return { success: true, message: '保存しました' };
     }
   );
