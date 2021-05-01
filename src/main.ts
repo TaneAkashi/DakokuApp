@@ -1,10 +1,8 @@
 import path from 'path';
 import * as dakoku from 'akashi-dakoku-core';
 import { BrowserWindow, Notification, app, ipcMain, shell } from 'electron';
-import pie from 'puppeteer-in-electron';
-import { Browser } from 'puppeteer';
-import puppeteer from 'puppeteer-core';
 import { Block, KnownBlock } from '@slack/types';
+import * as pptr from './pptr';
 import * as slack from './slack';
 import * as sound from './sound';
 import * as store from './store';
@@ -19,15 +17,13 @@ type DakokuOptions = {
   company: string;
 };
 
-let browser: Browser | null = null;
 let mainWindow: BrowserWindow | null = null;
 let dakokuWindow: BrowserWindow | null = null;
 
 const initialize = async () => {
   store.initialize();
   const port = store.getPort();
-  await pie.initialize(app, port);
-  browser = await pie.connect(app, puppeteer);
+  await pptr.initialize(app, port);
 };
 const initializePromise = initialize();
 
@@ -56,16 +52,13 @@ const openWindow = async () => {
   });
 };
 
-function closeWindow() {
+const closeWindow = () => {
   if (mainWindow) {
     mainWindow.close();
   }
-}
+};
 
 const runDakoku = async (task: TaskType, options: DakokuOptions): Promise<dakoku.Result> => {
-  if (!browser) {
-    throw new Error('browser is not initialized.');
-  }
   if (dakokuWindow) {
     throw new Error('別の打刻が実行されています');
   }
@@ -76,8 +69,8 @@ const runDakoku = async (task: TaskType, options: DakokuOptions): Promise<dakoku
     });
 
     // 打刻処理
-    const run = async (browser: Browser, dakokuWindow: BrowserWindow) => {
-      const page = await pie.getPage(browser, dakokuWindow);
+    const run = async (dakokuWindow: BrowserWindow) => {
+      const page = await pptr.getPage(dakokuWindow);
       const result = await dakoku.dakoku(page)[task](options);
       return result;
     };
@@ -90,7 +83,7 @@ const runDakoku = async (task: TaskType, options: DakokuOptions): Promise<dakoku
 
     // Promise.race で早く終了したほうを返す
     // timerForTimeout は resolve しないため、as で型を指定している
-    const result = (await Promise.race([run(browser, dakokuWindow), timerForTimeout()])) as dakoku.Result;
+    const result = (await Promise.race([run(dakokuWindow), timerForTimeout()])) as dakoku.Result;
 
     if (dakokuWindow) {
       dakokuWindow.destroy();
