@@ -5,6 +5,7 @@ import * as pptr from './pptr';
 import * as slack from './slack';
 import * as sound from './sound';
 import * as store from './store';
+import { sleep } from './utils/sleep';
 
 export type TaskType = keyof ReturnType<typeof akashi.dakoku>;
 
@@ -32,8 +33,23 @@ export const run = async (task: TaskType, options: Options): Promise<akashi.Resu
     win = new BrowserWindow({
       show: false,
     });
-    const page = await pptr.getPage(win);
-    const result = await akashi.dakoku(page)[task](options);
+
+    // 打刻処理
+    const run = async (win: BrowserWindow) => {
+      const page = await pptr.getPage(win);
+      const result = await akashi.dakoku(page)[task](options);
+      return result;
+    };
+
+    // 10秒でタイムアウトでエラーにする
+    const timerForTimeout = async (): Promise<void> => {
+      await sleep(10000);
+      throw new Error('タイムアウトしました');
+    };
+
+    // Promise.race で早く終了したほうを返す
+    // timerForTimeout は resolve しないため、as で型を指定している
+    const result = (await Promise.race([run(win), timerForTimeout()])) as akashi.Result;
     destroyWindow();
     return result;
   } catch (e) {
