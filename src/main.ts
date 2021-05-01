@@ -88,6 +88,8 @@ const runDakoku = async (task: TaskType, options: DakokuOptions): Promise<dakoku
       throw new Error('タイムアウト');
     };
 
+    // Promise.race で早く終了したほうを返す
+    // timerForTimeout は resolve しないため、as で型を指定している
     const result = (await Promise.race([run(browser, dakokuWindow), timerForTimeout()])) as dakoku.Result;
 
     if (dakokuWindow) {
