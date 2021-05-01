@@ -17,6 +17,16 @@ type Options = {
 
 let win: BrowserWindow | null = null;
 
+const initializeWindow = () => {
+  if (win) {
+    throw new Error('別の処理が実行されています');
+  }
+
+  win = new BrowserWindow({
+    show: false,
+  });
+};
+
 const destroyWindow = () => {
   if (win) {
     win.destroy();
@@ -25,14 +35,8 @@ const destroyWindow = () => {
 };
 
 export const run = async (task: TaskType, options: Options): Promise<akashi.Result> => {
-  if (win) {
-    throw new Error('別の打刻が実行されています');
-  }
-
   try {
-    win = new BrowserWindow({
-      show: false,
-    });
+    initializeWindow();
 
     // 打刻処理
     const run = async (win: BrowserWindow) => {
@@ -50,10 +54,13 @@ export const run = async (task: TaskType, options: Options): Promise<akashi.Resu
     // Promise.race で早く終了したほうを返す
     // timerForTimeout は resolve しないため、as で型を指定している
     const result = (await Promise.race([run(win), timerForTimeout()])) as akashi.Result;
+
     destroyWindow();
+
     return result;
-  } catch (e) {
+  } catch (e: Error) {
     destroyWindow();
+
     throw e;
   }
 };
@@ -118,16 +125,12 @@ export const runByMenu = async (task: TaskType): Promise<void> => {
 };
 
 export const checkLogin = async (options: Options): Promise<boolean> => {
-  if (win) {
-    throw new Error('別の処理が実行されています');
-  }
-
-  win = new BrowserWindow({
-    show: false,
-  });
+  initializeWindow();
 
   const page = await pptr.getPage(win);
   const result = await akashi.checkLogin(page)(options);
+
   destroyWindow();
+
   return result;
 };
