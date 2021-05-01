@@ -9,6 +9,7 @@ import * as slack from './slack';
 import * as sound from './sound';
 import * as store from './store';
 import * as tray from './tray';
+import { sleep } from './utils/sleep';
 
 export type TaskType = keyof ReturnType<typeof dakoku.dakoku>;
 
@@ -62,11 +63,6 @@ function closeWindow() {
 }
 
 const runDakoku = async (task: TaskType, options: DakokuOptions): Promise<dakoku.Result> => {
-  // 10秒でタイムアウトでエラーにする
-  const timer = setTimeout(() => {
-    return Promise.reject(new Error('タイムアウト'));
-  }, 10000);
-
   if (!browser) {
     throw new Error('browser is not initialized.');
   }
@@ -78,22 +74,33 @@ const runDakoku = async (task: TaskType, options: DakokuOptions): Promise<dakoku
     dakokuWindow = new BrowserWindow({
       show: false,
     });
-    const page = await pie.getPage(await browser, dakokuWindow);
-    const result = await dakoku.dakoku(page)[task](options);
+
+    // 打刻処理
+    const run = async (browser: Browser, dakokuWindow: BrowserWindow) => {
+      const page = await pie.getPage(browser, dakokuWindow);
+      const result = await dakoku.dakoku(page)[task](options);
+      return result;
+    };
+
+    // 10秒でタイムアウトでエラーにする
+    const timerForTimeout = async (): Promise<void> => {
+      await sleep(10000);
+      throw new Error('タイムアウト');
+    };
+
+    const result = (await Promise.race([run(browser, dakokuWindow), timerForTimeout()])) as dakoku.Result;
 
     if (dakokuWindow) {
       dakokuWindow.destroy();
       dakokuWindow = null;
     }
-    clearTimeout(timer);
-    return Promise.resolve(result);
+    return result;
   } catch (e) {
     if (dakokuWindow) {
       dakokuWindow.destroy();
       dakokuWindow = null;
     }
-    clearTimeout(timer);
-    return Promise.reject(e);
+    throw e;
   }
 };
 
