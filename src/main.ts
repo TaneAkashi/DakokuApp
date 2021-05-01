@@ -73,7 +73,7 @@ const runDakoku = async (task: TaskType, options: DakokuOptions): Promise<dakoku
     dakokuWindow = new BrowserWindow({
       show: false,
     });
-    const page = await pie.getPage(await browser, dakokuWindow);
+    const page = await pie.getPage(browser, dakokuWindow, true);
     const result = await dakoku.dakoku(page)[task](options);
 
     if (dakokuWindow) {
