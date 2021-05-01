@@ -1,11 +1,9 @@
-import path from 'path';
-import { BrowserWindow, Notification, app, ipcMain, shell } from 'electron';
+import { BrowserWindow, Notification, app, ipcMain } from 'electron';
 import * as dakoku from './dakoku';
 import * as pptr from './pptr';
+import * as settingsWindow from './settings-window';
 import * as store from './store';
 import * as tray from './tray';
-
-let mainWindow: BrowserWindow | null = null;
 
 const initialize = async () => {
   store.initialize();
@@ -13,37 +11,6 @@ const initialize = async () => {
   await pptr.initialize(app, port);
 };
 const initializePromise = initialize();
-
-const openWindow = async () => {
-  if (mainWindow) {
-    mainWindow.show();
-    mainWindow.focus();
-    return;
-  }
-
-  mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
-    webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
-    },
-  });
-  mainWindow.webContents.on('new-window', (event, url) => {
-    event.preventDefault();
-    shell.openExternal(url);
-  });
-  await mainWindow.loadFile('templates/index.html');
-  mainWindow.webContents.send('store-data', store.getInitialOptions());
-  mainWindow.on('closed', () => {
-    mainWindow = null;
-  });
-};
-
-const closeWindow = () => {
-  if (mainWindow) {
-    mainWindow.close();
-  }
-};
 
 app.whenReady().then(async () => {
   ipcMain.handle('saveDakokuOptions', (event, email, password, company) => {
@@ -56,11 +23,11 @@ app.whenReady().then(async () => {
 
   ipcMain.handle('saveOtherOptions', (event, sound, showDirectly) => {
     store.saveOtherOptions(sound, showDirectly);
-    tray.initialize(openWindow, dakoku.runByMenu, store.getShowDirectly());
+    tray.initialize(settingsWindow.open, dakoku.runByMenu, store.getShowDirectly());
   });
 
   ipcMain.handle('closeWindow', () => {
-    closeWindow();
+    settingsWindow.close();
   });
 
   // これがないとなぜかSlack通知失敗する
@@ -75,11 +42,11 @@ app.whenReady().then(async () => {
   // 初期化処理待機
   await initializePromise;
 
-  tray.initialize(openWindow, dakoku.runByMenu, store.getShowDirectly());
+  tray.initialize(settingsWindow.open, dakoku.runByMenu, store.getShowDirectly());
 
   // 設定の登録がない場合はウィンドウを開く
   const dakokuOptions = store.getDakokuOptions();
   if (!dakokuOptions.username || !dakokuOptions.password || !dakokuOptions.company) {
-    openWindow();
+    settingsWindow.open();
   }
 });
