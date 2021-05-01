@@ -116,3 +116,18 @@ export const runByMenu = async (task: TaskType): Promise<void> => {
     await slack.sendMessage(slackOptions, payload.slack.text, payload.slack.blocks);
   }
 };
+
+export const checkLogin = async (options: Options): Promise<boolean> => {
+  if (win) {
+    throw new Error('別の処理が実行されています');
+  }
+
+  win = new BrowserWindow({
+    show: false,
+  });
+
+  const page = await pptr.getPage(win);
+  const result = await akashi.checkLogin(page)(options);
+  destroyWindow();
+  return result;
+};

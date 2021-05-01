@@ -16,21 +16,11 @@ app.whenReady().then(async () => {
   ipcMain.handle(
     'saveDakokuOptions',
     async (event, email, password, company): Promise<{ success: boolean; message: string }> => {
-      if (dakokuWindow) {
-        return { success: false, message: '別の処理が実行されています' };
+      const result = await dakoku.checkLogin({ username: email, password, company }).catch((e: Error) => e);
+
+      if (result instanceof Error) {
+        return { success: false, message: result.message };
       }
-
-      dakokuWindow = new BrowserWindow({
-        show: false,
-      });
-      const page = await pptr.getPage(dakokuWindow);
-      const result = await dakoku.checkLogin(page)({ username: email, password, company });
-
-      if (dakokuWindow) {
-        dakokuWindow.destroy();
-        dakokuWindow = null;
-      }
-
       if (!result) {
         return { success: false, message: 'ログインできませんでした' };
       }
