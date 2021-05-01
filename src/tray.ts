@@ -1,6 +1,6 @@
 import path from 'path';
 import { Menu, MenuItemConstructorOptions, MenuItem, Tray, app, shell } from 'electron';
-import { TaskType } from './main';
+import { TaskType } from './dakoku';
 import { StoreRelease } from './store';
 
 let tray: Tray | null = null;
