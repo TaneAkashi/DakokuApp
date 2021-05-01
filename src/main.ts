@@ -85,7 +85,7 @@ const runDakoku = async (task: TaskType, options: DakokuOptions): Promise<dakoku
     // 10秒でタイムアウトでエラーにする
     const timerForTimeout = async (): Promise<void> => {
       await sleep(10000);
-      throw new Error('タイムアウト');
+      throw new Error('タイムアウトしました');
     };
 
     // Promise.race で早く終了したほうを返す
