@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
   <head>
     <meta charset="UTF-8">
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
@@ -18,19 +18,12 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css" crossorigin="anonymous">
   </head>
   <body>
-      <section class="columns px-2 py-2">
-        <section class="column is-offset-1 is-10">
-          <div class="buttons is-centered">
-            <button id="close" class="button is-small" type="submit">閉じる</button>
-          </div>
-        </section>
-      </section>
-
-      <section class="columns px-2 py-2">
-        <section class="column is-offset-1 is-10">
+    <div>
+      <section class="columns px-2 py-2 pt-6">
+        <div class="column is-offset-1 is-10">
           <h2 class="subtitle has-text-centered">ログイン情報</h2>
           <p class="is-size-6 has-text-centered"><a href="https://atnd.ak4.jp/reset_password" target="_blank" rel="noopener">こちら</a>からパスワード発行が可能</p>
-          <form id="form" method="" class="mt-4">
+          <form id="form" method="POST" class="mt-4">
             <div class="field is-horizontal">
               <div class="field-label is-small">
                 <label for="email" class="label is-small">メールアドレス</label>
@@ -71,13 +64,13 @@
               <button class="button is-info is-small" type="submit">保存</button>
             </div>
           </form>
-        </section>
+        </div>
       </section>
 
       <section class="columns px-2 py-2">
-        <section class="column is-offset-1 is-10">
+        <div class="column is-offset-1 is-10">
           <h2 class="subtitle has-text-centered">Slack Incoming Webhook</h2>
-          <form id="slack" method="">
+          <form id="slack" method="POST">
             <div class="field is-horizontal">
               <div class="field-label is-small">
                 <label for="slack-url" class="label is-small">URL</label>
@@ -118,13 +111,13 @@
               <button class="button is-info is-small" type="submit">保存</button>
             </div>
           </form>
-        </section>
+        </div>
       </section>
 
       <section class="columns px-2 py-2">
-        <section class="column is-offset-1 is-10">
+        <div class="column is-offset-1 is-10">
           <h2 class="subtitle has-text-centered">その他設定</h2>
-          <form id="other" method="">
+          <form id="other" method="POST">
             <div class="field is-horizontal">
               <div class="field-label is-small">
                 <label for="sound" class="label is-small">操作音</label>
@@ -157,7 +150,7 @@
               <button class="button is-info is-small" type="submit">保存</button>
             </div>
           </form>
-        </section>
+        </div>
       </section>
     </div>
 
