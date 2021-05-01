@@ -147,9 +147,33 @@ app.whenReady().then(async () => {
     return runDakoku(task, options);
   });
 
-  ipcMain.handle('saveDakokuOptions', (event, email, password, company) => {
-    store.saveDakokuOptions(email, password, company);
-  });
+  ipcMain.handle(
+    'saveDakokuOptions',
+    async (event, email, password, company): Promise<{ success: boolean; message: string }> => {
+      if (dakokuWindow) {
+        return { success: false, message: '別の処理が実行されています' };
+      }
+
+      dakokuWindow = new BrowserWindow({
+        show: false,
+      });
+      const page = await pptr.getPage(dakokuWindow);
+      const result = await dakoku.checkLogin(page)({ username: email, password, company });
+
+      if (dakokuWindow) {
+        dakokuWindow.destroy();
+        dakokuWindow = null;
+      }
+
+      if (!result) {
+        return { success: false, message: 'ログインできませんでした' };
+      }
+
+      store.saveDakokuOptions(email, password, company);
+
+      return { success: true, message: '保存しました' };
+    }
+  );
 
   ipcMain.handle('saveSlackOptions', (event, url, icon_emoji, username) => {
     store.saveSlackOptions(url, icon_emoji, username);

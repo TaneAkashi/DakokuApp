@@ -25,13 +25,13 @@ window.addEventListener('DOMContentLoaded', () => {
 
   (document.getElementById('form') as HTMLFormElement).addEventListener('submit', async (event) => {
     event.preventDefault();
-    await saveDakokuOptions(
+    const { message } = await saveDakokuOptions(
       (document.getElementById('email') as HTMLInputElement).value,
       (document.getElementById('password') as HTMLInputElement).value,
       (document.getElementById('office') as HTMLInputElement).value
     );
     (document.getElementById('password') as HTMLInputElement).value = '';
-    alert('保存しました');
+    alert(message);
   });
 
   (document.getElementById('slack') as HTMLFormElement).addEventListener('submit', async (event) => {
