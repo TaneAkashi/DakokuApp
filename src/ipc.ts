@@ -17,8 +17,4 @@ export const subscribe = (): void => {
     store.saveOtherOptions(sound, showDirectly);
     tray.initialize(settingsWindow.open, dakoku.runByMenu, store.getShowDirectly());
   });
-
-  ipcMain.handle('closeWindow', () => {
-    settingsWindow.close();
-  });
 };
