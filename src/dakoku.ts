@@ -15,29 +15,19 @@ type Options = {
   company: string;
 };
 
-let win: BrowserWindow | null = null;
-
-const initializeWindow = () => {
-  if (!win) {
-    win = new BrowserWindow({
-      show: false,
-    });
-  }
-};
-
-const destroyWindow = () => {
-  if (win) {
-    win.destroy();
-    win = null;
-  }
-};
+let running = false;
 
 export const run = async (task: TaskType, options: Options): Promise<akashi.Result> => {
+  if (running) throw new Error('別の処理が実行されています');
+
+  running = true;
+  const win = new BrowserWindow({
+    show: false,
+  });
+
   try {
     // 打刻処理
     const run = async () => {
-      if (win) throw new Error('別の処理が実行されています');
-      initializeWindow();
       const page = await pptr.getPage(win);
       const result = await akashi.dakoku(page)[task](options);
       return result;
@@ -53,11 +43,13 @@ export const run = async (task: TaskType, options: Options): Promise<akashi.Resu
     // timerForTimeout は resolve しないため、as で型を指定している
     const result = (await Promise.race([run(), timerForTimeout()])) as akashi.Result;
 
-    destroyWindow();
+    win.destroy();
+    running = false;
 
     return result;
   } catch (e) {
-    destroyWindow();
+    win.destroy();
+    running = false;
 
     throw e;
   }
@@ -123,13 +115,18 @@ export const runByMenu = async (task: TaskType): Promise<void> => {
 };
 
 export const checkLogin = async (options: Options): Promise<boolean> => {
-  if (win) throw new Error('別の処理が実行されています');
-  initializeWindow();
+  if (running) throw new Error('別の処理が実行されています');
+
+  running = true;
+  const win = new BrowserWindow({
+    show: false,
+  });
 
   const page = await pptr.getPage(win);
   const result = await akashi.checkLogin(page)(options);
 
-  destroyWindow();
+  win.destroy();
+  running = false;
 
   return result;
 };
