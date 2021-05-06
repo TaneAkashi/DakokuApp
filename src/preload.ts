@@ -52,9 +52,4 @@ window.addEventListener('DOMContentLoaded', () => {
     );
     alert('保存しました');
   });
-
-  (document.getElementById('close') as HTMLButtonElement).addEventListener('click', (event) => {
-    event.preventDefault();
-    ipcRenderer.invoke('closeWindow');
-  });
 });
