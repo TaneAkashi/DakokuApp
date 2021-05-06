@@ -36,7 +36,7 @@ export const run = async (task: TaskType, options: Options): Promise<akashi.Resu
   try {
     // 打刻処理
     const run = async () => {
-      if (!win) throw new Error('別の処理が実行されています');
+      if (win) throw new Error('別の処理が実行されています');
       initializeWindow();
       const page = await pptr.getPage(win);
       const result = await akashi.dakoku(page)[task](options);
