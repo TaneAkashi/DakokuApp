@@ -15,27 +15,29 @@ type Options = {
   company: string;
 };
 
-let win: BrowserWindow | null = null;
+let running = false;
 
-const destroyWindow = () => {
-  if (win) {
-    win.destroy();
-    win = null;
-  }
+const startRun = (): BrowserWindow => {
+  running = true;
+  const win = new BrowserWindow({
+    show: false,
+  });
+  return win;
+};
+
+const endRun = (win: BrowserWindow) => {
+  win.destroy();
+  running = false;
 };
 
 export const run = async (task: TaskType, options: Options): Promise<akashi.Result> => {
-  if (win) {
-    throw new Error('別の打刻が実行されています');
-  }
+  if (running) throw new Error('別の処理が実行されています');
+
+  const win = startRun();
 
   try {
-    win = new BrowserWindow({
-      show: false,
-    });
-
     // 打刻処理
-    const run = async (win: BrowserWindow) => {
+    const run = async () => {
       const page = await pptr.getPage(win);
       const result = await akashi.dakoku(page)[task](options);
       return result;
@@ -49,11 +51,14 @@ export const run = async (task: TaskType, options: Options): Promise<akashi.Resu
 
     // Promise.race で早く終了したほうを返す
     // timerForTimeout は resolve しないため、as で型を指定している
-    const result = (await Promise.race([run(win), timerForTimeout()])) as akashi.Result;
-    destroyWindow();
+    const result = (await Promise.race([run(), timerForTimeout()])) as akashi.Result;
+
+    endRun(win);
+
     return result;
   } catch (e) {
-    destroyWindow();
+    endRun(win);
+
     throw e;
   }
 };
@@ -115,4 +120,17 @@ export const runByMenu = async (task: TaskType): Promise<void> => {
   if (slackOptions.url) {
     await slack.sendMessage(slackOptions, payload.slack.text, payload.slack.blocks);
   }
+};
+
+export const checkLogin = async (options: Options): Promise<boolean> => {
+  if (running) throw new Error('別の処理が実行されています');
+
+  const win = startRun();
+
+  const page = await pptr.getPage(win);
+  const result = await akashi.checkLogin(page)(options);
+
+  endRun(win);
+
+  return result;
 };

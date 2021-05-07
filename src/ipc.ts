@@ -5,9 +5,22 @@ import * as store from './store';
 import * as tray from './tray';
 
 export const subscribe = (): void => {
-  ipcMain.handle('saveDakokuOptions', (event, email, password, company) => {
-    store.saveDakokuOptions(email, password, company);
-  });
+  ipcMain.handle(
+    'saveDakokuOptions',
+    async (event, email, password, company): Promise<{ success: boolean; message: string }> => {
+      const result = await dakoku.checkLogin({ username: email, password, company }).catch((e: Error) => e);
+
+      if (result instanceof Error) {
+        return { success: false, message: result.message };
+      }
+      if (!result) {
+        return { success: false, message: 'ログインできませんでした' };
+      }
+
+      store.saveDakokuOptions(email, password, company);
+      return { success: true, message: '保存しました' };
+    }
+  );
 
   ipcMain.handle('saveSlackOptions', (event, url, icon_emoji, username) => {
     store.saveSlackOptions(url, icon_emoji, username);
