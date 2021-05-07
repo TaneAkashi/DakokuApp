@@ -1,7 +1,9 @@
 import get from 'axios';
+import { app } from 'electron';
+import { saveRelease } from './store';
 
 /** @see https://docs.github.com/en/rest/reference/repos#get-the-latest-release */
-const LATEST_API_URL = 'https://api.github.com/repos/TaneAkashi/dakoku-/releases/latest';
+const LATEST_API_URL = 'https://api.github.com/repos/TaneAkashi/DakokuApp/releases/latest';
 
 export type Release = {
   url: string;
@@ -43,9 +45,16 @@ export type Release = {
   body: string;
 };
 
-export const fetchLatest = async (): Promise<Release | null> => {
+const fetchLatest = async (): Promise<Release | null> => {
   const version = await get(LATEST_API_URL)
     .then((res) => res.data)
     .catch(() => null);
   return version;
+};
+
+export const saveIfReleaseExists = async (): Promise<void> => {
+  const release = await fetchLatest();
+  if (release && release.tag_name.slice(1) !== app.getVersion()) {
+    saveRelease(release);
+  }
 };

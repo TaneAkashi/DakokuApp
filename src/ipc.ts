@@ -15,6 +15,6 @@ export const subscribe = (): void => {
 
   ipcMain.handle('saveOtherOptions', (event, sound, showDirectly) => {
     store.saveOtherOptions(sound, showDirectly);
-    tray.initialize(settingsWindow.open, dakoku.runByMenu, store.getShowDirectly());
+    tray.initialize(settingsWindow.open, dakoku.runByMenu, store.getShowDirectly(), store.getRelease());
   });
 };
