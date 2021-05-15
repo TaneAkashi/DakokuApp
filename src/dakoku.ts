@@ -1,5 +1,5 @@
 import * as akashi from 'akashi-dakoku-core';
-import { BrowserWindow, Notification, Tray } from 'electron';
+import { BrowserWindow, Notification } from 'electron';
 import { Block, KnownBlock } from '@slack/types';
 import * as pptr from './pptr';
 import * as slack from './slack';
