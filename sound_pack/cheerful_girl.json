@@ -1,0 +1,28 @@
+{
+  "start": [
+    "https://soundeffect-lab.info/sound/voice/mp3/line-girl1/line-girl1-yaa1.mp3",
+    "https://soundeffect-lab.info/sound/voice/mp3/line-girl1/line-girl1-yoho1.mp3",
+    "https://soundeffect-lab.info/sound/voice/mp3/line-girl1/line-girl1-hi1.mp3",
+    "https://soundeffect-lab.info/sound/voice/mp3/line-girl1/line-girl1-ohayougozaimasu1.mp3",
+    "https://soundeffect-lab.info/sound/voice/mp3/line-girl1/line-girl1-ohayou1.mp3"
+  ],
+  "finish": [
+    "https://soundeffect-lab.info/sound/voice/mp3/line-girl1/line-girl1-otsukaresamadesu1.mp3",
+    "https://soundeffect-lab.info/sound/voice/mp3/line-girl1/line-girl1-otsukaresamadeshita1.mp3",
+    "https://soundeffect-lab.info/sound/voice/mp3/line-girl1/line-girl1-byebye1.mp3",
+    "https://soundeffect-lab.info/sound/voice/mp3/line-girl1/line-girl1-sorezyane1.mp3"
+  ],
+  "meaningless": [
+    "https://soundeffect-lab.info/sound/voice/mp3/line-girl1/line-girl1-yo1.mp3",
+    "https://soundeffect-lab.info/sound/voice/mp3/line-girl1/line-girl1-ei1.mp3",
+    "https://soundeffect-lab.info/sound/voice/mp3/line-girl1/line-girl1-tou1.mp3",
+    "https://soundeffect-lab.info/sound/voice/mp3/line-girl1/line-girl1-yaa2.mp3",
+    "https://soundeffect-lab.info/sound/voice/mp3/line-girl1/line-girl1-chest1.mp3",
+    "https://soundeffect-lab.info/sound/voice/mp3/line-girl1/line-girl1-utsubeshiutsubeshi1.mp3"
+  ],
+  "error": [
+    "https://soundeffect-lab.info/sound/voice/mp3/line-girl1/line-girl1-sonnaa1.mp3",
+    "https://soundeffect-lab.info/sound/voice/mp3/line-girl1/line-girl1-gege1.mp3",
+    "https://soundeffect-lab.info/sound/voice/mp3/line-girl1/line-girl1-chottomazuikamo1.mp3"
+  ]
+}

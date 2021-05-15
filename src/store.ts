@@ -1,5 +1,6 @@
 import Store, { Schema } from 'electron-store';
 import { Release } from './release';
+import { SoundPackId } from './sound';
 
 export type StoreRelease = Pick<
   Release,
@@ -10,7 +11,7 @@ type SchemaType = {
   username: string;
   password: string;
   company: string;
-  sound: boolean;
+  sound: SoundPackId;
   showDirectly: boolean;
   port: number;
   slack: {
@@ -37,8 +38,8 @@ const schema: Schema<SchemaType> = {
     default: '',
   },
   sound: {
-    type: 'boolean',
-    default: false,
+    type: 'string',
+    default: 'none',
   },
   showDirectly: {
     type: 'boolean',
@@ -82,16 +83,16 @@ type SlackOptions = SchemaType['slack'];
 type InitialOptions = Pick<DakokuOptions, 'username' | 'company'> & {
   slack: SlackOptions;
   sound: SchemaType['sound'];
-  showDirectly: SchemaType['sound'];
+  showDirectly: SchemaType['showDirectly'];
 };
 
 export const initialize = (): void => {
   store = new Store<SchemaType>({ schema });
 };
 
-export const getSound = (): boolean => {
+export const getSound = (): SoundPackId => {
   if (!store) throw new Error('store is not initialized.');
-  return store.get('sound', false);
+  return store.get('sound', 'none');
 };
 
 export const getShowDirectly = (): boolean => {
@@ -154,7 +155,7 @@ export const saveSlackOptions = (url: string, icon_emoji: string, username: stri
   store.set('slack.username', username);
 };
 
-export const saveOtherOptions = (sound: boolean, showDirectly: boolean): void => {
+export const saveOtherOptions = (sound: SoundPackId, showDirectly: boolean): void => {
   if (!store) throw new Error('store is not initialized.');
   store.set('sound', sound);
   store.set('showDirectly', showDirectly);

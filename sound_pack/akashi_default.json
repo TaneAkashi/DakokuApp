@@ -1,0 +1,6 @@
+{
+    "start": "https://atnd.ak4.jp/punch/s01.mp3",
+    "finish": "https://atnd.ak4.jp/punch/t01.mp3",
+    "meaningless": "https://atnd.ak4.jp/punch/e01.mp3",
+    "error": "https://atnd.ak4.jp/punch/s01.mp3"
+}
