@@ -118,6 +118,6 @@ export const runByMenu = async (task: TaskType): Promise<void> => {
   }
 
   // 打刻時に更新がないか調べる
-  // 打刻通知と被るのを防ぐため30秒程度遅延させる
-  setTimeout(release.doIfReleaseExists, 30000);
+  // 打刻通知と被るのを防ぐため10秒程度遅延させる
+  setTimeout(release.doIfReleaseExists, 10000);
 };
