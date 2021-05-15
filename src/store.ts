@@ -163,5 +163,6 @@ export const saveOtherOptions = (sound: boolean, showDirectly: boolean): void =>
 export const saveRelease = (release: StoreRelease | null): void => {
   if (!store) throw new Error('store is not initialized.');
   // electron-store schema は object | null のような型を取れないので undefined を null とみなして扱う
-  store.set('release', release || undefined);
+  // electron-store は store.set(..., undefined) を許容しないため delete を行う
+  release ? store.set('release', release) : store.delete('release');
 };
