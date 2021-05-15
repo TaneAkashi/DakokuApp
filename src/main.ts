@@ -40,6 +40,5 @@ app.whenReady().then(async () => {
   }
 
   // 起動時に更新がないか調べる
-  await release.saveIfReleaseExists();
-  tray.initialize(settingsWindow.open, dakoku.runByMenu, store.getShowDirectly(), store.getRelease());
+  await release.doIfReleaseExists();
 });

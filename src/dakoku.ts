@@ -6,8 +6,6 @@ import * as slack from './slack';
 import * as sound from './sound';
 import * as store from './store';
 import * as release from './release';
-import * as settingsWindow from './settings-window';
-import * as tray from './tray';
 import { sleep } from './utils/sleep';
 
 export type TaskType = keyof ReturnType<typeof akashi.dakoku>;
@@ -120,6 +118,6 @@ export const runByMenu = async (task: TaskType): Promise<void> => {
   }
 
   // 打刻時に更新がないか調べる
-  release.saveIfReleaseExists();
-  tray.initialize(settingsWindow.open, runByMenu, store.getShowDirectly(), store.getRelease());
+  // 打刻通知と被るのを防ぐため30秒程度遅延させる
+  setTimeout(release.doIfReleaseExists, 30000);
 };
