@@ -1,7 +1,12 @@
 import get from 'axios';
+import { app, Notification, shell } from 'electron';
+import * as dakoku from './dakoku';
+import * as settingsWindow from './settings-window';
+import * as store from './store';
+import * as tray from './tray';
 
 /** @see https://docs.github.com/en/rest/reference/repos#get-the-latest-release */
-const LATEST_API_URL = 'https://api.github.com/repos/TaneAkashi/dakoku-/releases/latest';
+const LATEST_API_URL = 'https://api.github.com/repos/TaneAkashi/DakokuApp/releases/latest';
 
 export type Release = {
   url: string;
@@ -43,9 +48,27 @@ export type Release = {
   body: string;
 };
 
-export const fetchLatest = async (): Promise<Release | null> => {
+const fetchLatest = async (): Promise<Release | null> => {
   const version = await get(LATEST_API_URL)
     .then((res) => res.data)
     .catch(() => null);
   return version;
+};
+
+export const doIfReleaseExists = async (): Promise<void> => {
+  const release = await fetchLatest();
+  if (release && release.tag_name.slice(1) !== app.getVersion()) {
+    store.saveRelease(release);
+    tray.initialize(settingsWindow.open, dakoku.runByMenu, store.getShowDirectly(), store.getRelease());
+    const notification = new Notification({
+      title: release.tag_name + ' がリリースされました！',
+      body: 'メニューから新しい' + app.getName() + 'を入手しましょう！',
+    });
+    notification.on('click', () => {
+      shell.openExternal(release.html_url);
+    });
+    notification.show();
+  } else {
+    store.saveRelease(null);
+  }
 };

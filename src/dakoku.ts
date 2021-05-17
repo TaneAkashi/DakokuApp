@@ -5,6 +5,7 @@ import * as pptr from './pptr';
 import * as slack from './slack';
 import * as sound from './sound';
 import * as store from './store';
+import * as release from './release';
 import { sleep } from './utils/sleep';
 
 export type TaskType = keyof ReturnType<typeof akashi.dakoku>;
@@ -120,6 +121,10 @@ export const runByMenu = async (task: TaskType): Promise<void> => {
   if (slackOptions.url) {
     await slack.sendMessage(slackOptions, payload.slack.text, payload.slack.blocks);
   }
+
+  // 打刻時に更新がないか調べる
+  // 打刻通知と被るのを防ぐため10秒程度遅延させる
+  setTimeout(release.doIfReleaseExists, 10000);
 };
 
 export const checkLogin = async (options: Options): Promise<boolean> => {

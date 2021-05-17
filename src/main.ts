@@ -5,6 +5,7 @@ import * as pptr from './pptr';
 import * as settingsWindow from './settings-window';
 import * as store from './store';
 import * as tray from './tray';
+import * as release from './release';
 
 const initialize = async () => {
   store.initialize();
@@ -37,4 +38,7 @@ app.whenReady().then(async () => {
   if (!dakokuOptions.username || !dakokuOptions.password || !dakokuOptions.company) {
     settingsWindow.open();
   }
+
+  // 起動時に更新がないか調べる
+  await release.doIfReleaseExists();
 });
