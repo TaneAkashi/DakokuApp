@@ -89,9 +89,11 @@ type InitialOptions = Pick<DakokuOptions, 'username' | 'company'> & {
 export const initialize = (): void => {
   new Store<SchemaType>({
     migrations: {
-      '1.0.0': (store) => {
-        store.delete('sound');
-        store.set('sound', 'none');
+      '1.1.0': (store) => {
+        if (typeof store.get('sound') === 'boolean') {
+          store.delete('sound');
+          store.set('sound', 'none');
+        }
       },
     },
   });
