@@ -16,7 +16,7 @@ export const play = async (packId: SoundPackId, taskType: SoundTaskType = 'error
 };
 
 const loadSoundPack = (filename: string): { [key in SoundPackTaskType]: string | string[] } => {
-  return require('./sound_pack/' + filename);
+  return require('../sound_pack/' + filename);
 };
 
 const urlResolver = (soundPackId: SoundPackId, task: SoundTaskType): string => {
