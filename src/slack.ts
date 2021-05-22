@@ -9,12 +9,14 @@ type SlackOptions = {
 
 export const generateSuccessMessage = (
   status: string,
+  time: string,
   note: string,
   telework?: string
 ): { text: string; blocks: (Block | KnownBlock)[] } => {
   const blocks: (Block | KnownBlock)[] = [];
 
-  let text = ':white_check_mark: ' + status;
+  const hhmmss = ((date) => `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`)(new Date(time));
+  let text = `:white_check_mark: ${status} ${hhmmss}`;
   if (telework) {
     text += ' ' + telework;
   }

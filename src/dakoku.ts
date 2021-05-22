@@ -89,7 +89,7 @@ export const runByMenu = async (task: TaskType): Promise<void> => {
           title: result.status + (result.telework ? ` ${result.telework}` : ''),
           body: result.note ? `アラート: ${result.note}` : '',
         },
-        slack: slack.generateSuccessMessage(result.status, result.note, result.telework),
+        slack: slack.generateSuccessMessage(result.status, result.time, result.note, result.telework),
       };
     })
     .catch((e) => {
