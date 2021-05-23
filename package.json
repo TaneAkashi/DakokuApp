@@ -1,6 +1,6 @@
 {
   "name": "DakokuApp",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Dakoku App",
   "main": "lib/main.js",
   "scripts": {
