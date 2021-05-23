@@ -15,7 +15,13 @@ export const generateSuccessMessage = (
 ): { text: string; blocks: (Block | KnownBlock)[] } => {
   const blocks: (Block | KnownBlock)[] = [];
 
-  const hhmmss = ((date) => `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`)(new Date(time));
+  const hhmmss = ((date) => {
+    const hh = date.getHours().toString().padStart(2, '0');
+    const mm = date.getMinutes().toString().padStart(2, '0');
+    const ss = date.getSeconds().toString().padStart(2, '0');
+    return hh + mm + ss;
+  })(new Date(time));
+
   let text = `:white_check_mark: ${status} ${hhmmss}`;
   if (telework) {
     text += ' ' + telework;
