@@ -38,7 +38,7 @@ const schema: Schema<SchemaType> = {
     default: '',
   },
   sound: {
-    type: 'string',
+    type: ['boolean', 'string'],
     default: 'none',
   },
   showDirectly: {
@@ -87,7 +87,8 @@ type InitialOptions = Pick<DakokuOptions, 'username' | 'company'> & {
 };
 
 export const initialize = (): void => {
-  new Store<SchemaType>({
+  store = new Store<SchemaType>({
+    schema,
     migrations: {
       '>=1.1.0': (store) => {
         if (typeof store.get('sound') === 'boolean') {
@@ -96,9 +97,6 @@ export const initialize = (): void => {
         }
       },
     },
-  });
-  store = new Store<SchemaType>({
-    schema,
   });
 };
 
