@@ -1,0 +1,66 @@
+name: Build
+
+on:
+  - workflow_dispatch
+  - pull_request
+
+jobs:
+  build_win:
+    name: Build for Windows
+    runs-on: windows-latest
+    timeout-minutes: 5
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js 12
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+
+      - name: Build app
+        run: yarn build:win
+
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-win
+          path: |
+            dist
+            !dist/win-unpacked
+
+  build_mac:
+    name: Build for Mac OS
+    runs-on: macos-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js 12
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+
+      - name: Build app
+        run: yarn build:mac
+
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-mac
+          path: |
+            dist
+            !dist/mac

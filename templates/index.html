@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8">
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Security-Policy" content="
+      default-src 'self';
+      script-src 'self';
+      style-src https://*;
+    ">
+    <meta http-equiv="X-Content-Security-Policy" content="
+      default-src 'self';
+      script-src 'self';
+      style-src https://*;
+    ">
+    <title>DakokuApp</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css" crossorigin="anonymous">
+  </head>
+  <body>
+    <div>
+      <section class="columns px-2 py-2 pt-6">
+        <div class="column is-offset-1 is-10">
+          <h2 class="subtitle has-text-centered">ログイン情報</h2>
+          <p class="is-size-6 has-text-centered"><a href="https://atnd.ak4.jp/reset_password" target="_blank" rel="noopener">こちら</a>からパスワード発行が可能</p>
+          <form id="form" method="POST" class="mt-4">
+            <div class="field is-horizontal">
+              <div class="field-label is-small">
+                <label for="email" class="label is-small">メールアドレス</label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                  <div class="control is-small">
+                    <input class="input is-small" id="email" type="email" name="email" placeholder="メールアドレス">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="field is-horizontal">
+              <div class="field-label is-small">
+                <label for="password" class="label is-small">パスワード</label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                  <div class="control is-small">
+                    <input class="input is-small" id="password" type="password" name="password" placeholder="パスワード">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="field is-horizontal">
+              <div class="field-label is-small">
+                <label for="office" class="label is-small">企業ID</label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                  <div class="control is-small">
+                    <input class="input is-small" id="office" type="text" name="office" placeholder="企業ID">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="buttons is-centered">
+              <button class="button is-info is-small" type="submit">保存</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <section class="columns px-2 py-2">
+        <div class="column is-offset-1 is-10">
+          <h2 class="subtitle has-text-centered">Slack Incoming Webhook</h2>
+          <form id="slack" method="POST">
+            <div class="field is-horizontal">
+              <div class="field-label is-small">
+                <label for="slack-url" class="label is-small">URL</label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                  <div class="control is-small">
+                    <input class="input is-small" id="slack-url" type="url" name="url" placeholder="URL">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="field is-horizontal">
+              <div class="field-label is-small">
+                <label for="slack-icon_emoji" class="label is-small">絵文字アイコン</label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                  <div class="control is-small">
+                    <input class="input is-small" id="slack-icon_emoji" type="text" name="icon_emoji" placeholder=":icon_emoji:">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="field is-horizontal">
+              <div class="field-label is-small">
+                <label for="slack-username" class="label is-small">表示名</label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                  <div class="control is-small">
+                    <input class="input is-small" id="slack-username" type="text" name="username" placeholder="DakokuApp">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="buttons is-centered">
+              <button class="button is-info is-small" type="submit">保存</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <section class="columns px-2 py-2">
+        <div class="column is-offset-1 is-10">
+          <h2 class="subtitle has-text-centered">その他設定</h2>
+          <form id="other" method="POST">
+            <div class="field is-horizontal">
+              <div class="field-label is-small">
+                <label for="sound" class="label is-small">操作音</label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                  <div class="control is-small">
+                    <label class="checkbox">
+                      <input type="checkbox" id="sound" name="sound">
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="field is-horizontal">
+              <div class="field-label is-small">
+                <label for="show-directly" class="label is-small">直行直帰を表示</label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                  <div class="control is-small">
+                    <label class="checkbox">
+                      <input type="checkbox" id="show-directly" name="show-directly">
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="buttons is-centered">
+              <button class="button is-info is-small" type="submit">保存</button>
+            </div>
+          </form>
+        </div>
+      </section>
+    </div>
+
+    <!-- You can also require other files to run in this process -->
+    <script src="./renderer.js"></script>
+  </body>
+</html>
