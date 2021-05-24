@@ -8,11 +8,11 @@ export type StoreRelease = Pick<
 >;
 
 /*
-electron-store の migrations の使用は、前方互換性の問題を考慮する必要がある。
+electron-storeのmigrationsの使用は、前方互換性の問題を考慮する必要がある。
 リリースの新旧でmigrationsを適用し、electorn-store内のキーの型が変化した場合、旧リリースでの起動ができなくなる。
 この問題を避けるため、キーの型を変えて使いたい場合、別名のキーを使用し、旧キー名は使用不可とする運用を採用する。
 以下のキーは過去に使用されたキーである。
-- [<=v1.0.0] sound: boolean
+- [<=1.0.0] sound: boolean
 */
 type SchemaType = {
   username: string;
