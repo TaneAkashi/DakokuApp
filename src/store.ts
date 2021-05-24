@@ -6,12 +6,16 @@ export type StoreRelease = Pick<
   Release,
   'html_url' | 'id' | 'node_id' | 'tag_name' | 'name' | 'draft' | 'prerelease' | 'body'
 >;
-
+/*
+migrations の使用は、前方互換性を解決できるかどうかを考慮する必要がある。
+以下のキーは過去に使用されたキーである。同名のキーを異なるデータ型で使用すると、ユーザ環境でエラーが発生することがある。
+- [<=v1.0.0] sound: boolean
+*/
 type SchemaType = {
   username: string;
   password: string;
   company: string;
-  sound: SoundPackId;
+  soundPack: SoundPackId;
   showDirectly: boolean;
   port: number;
   slack: {
@@ -37,8 +41,8 @@ const schema: Schema<SchemaType> = {
     type: 'string',
     default: '',
   },
-  sound: {
-    type: ['boolean', 'string'],
+  soundPack: {
+    type: 'string',
     default: 'none',
   },
   showDirectly: {
@@ -82,27 +86,17 @@ type SlackOptions = SchemaType['slack'];
 
 type InitialOptions = Pick<DakokuOptions, 'username' | 'company'> & {
   slack: SlackOptions;
-  sound: SchemaType['sound'];
+  sound: SchemaType['soundPack'];
   showDirectly: SchemaType['showDirectly'];
 };
 
 export const initialize = (): void => {
-  store = new Store<SchemaType>({
-    schema,
-    migrations: {
-      '>=1.1.0': (store) => {
-        if (typeof store.get('sound') === 'boolean') {
-          store.delete('sound');
-          store.set('sound', 'none');
-        }
-      },
-    },
-  });
+  store = new Store<SchemaType>({ schema });
 };
 
 export const getSound = (): SoundPackId => {
   if (!store) throw new Error('store is not initialized.');
-  return store.get('sound', 'none');
+  return store.get('soundPack', 'none');
 };
 
 export const getShowDirectly = (): boolean => {
@@ -165,9 +159,9 @@ export const saveSlackOptions = (url: string, icon_emoji: string, username: stri
   store.set('slack.username', username);
 };
 
-export const saveOtherOptions = (sound: SoundPackId, showDirectly: boolean): void => {
+export const saveOtherOptions = (soundPack: SoundPackId, showDirectly: boolean): void => {
   if (!store) throw new Error('store is not initialized.');
-  store.set('sound', sound);
+  store.set('soundPack', soundPack);
   store.set('showDirectly', showDirectly);
 };
 
