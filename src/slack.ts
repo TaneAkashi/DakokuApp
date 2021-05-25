@@ -22,10 +22,11 @@ export const generateSuccessMessage = (
     return `${hh}:${mm}:${ss}`;
   })(new Date(time));
 
-  let text = `:white_check_mark: ${status} ${hhmmss}`;
+  let text = `:white_check_mark: ${status}`;
   if (telework) {
     text += ' ' + telework;
   }
+  text += ` (${hhmmss})`;
   blocks.push({
     type: 'section',
     text: {
