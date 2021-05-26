@@ -70,7 +70,10 @@ export const runByMenu = async (task: TaskType): Promise<void> => {
 
   type Payload = {
     success: boolean;
-    soundType: TaskType | 'error';
+    sound: {
+      packId: sound.SoundPackId;
+      taskType: sound.SoundTaskType;
+    };
     notification: {
       title: string;
       body: string;
@@ -85,7 +88,10 @@ export const runByMenu = async (task: TaskType): Promise<void> => {
     .then((result) => {
       return {
         success: true,
-        soundType: task,
+        sound: {
+          packId: store.getSound(),
+          taskType: task,
+        },
         notification: {
           title: result.status + (result.telework ? ` ${result.telework}` : ''),
           body: result.note ? `アラート: ${result.note}` : '',
@@ -97,7 +103,10 @@ export const runByMenu = async (task: TaskType): Promise<void> => {
       const message = e instanceof Error ? e.message : '打刻に失敗しました';
       return {
         success: false,
-        soundType: 'error',
+        sound: {
+          packId: store.getSound(),
+          taskType: 'error',
+        },
         notification: {
           title: message,
           body: '',
@@ -108,9 +117,7 @@ export const runByMenu = async (task: TaskType): Promise<void> => {
       };
     });
 
-  if (store.getSound()) {
-    sound.play(payload.soundType);
-  }
+  sound.play(payload.sound.packId, payload.sound.taskType);
 
   const notification = new Notification({
     ...payload.notification,

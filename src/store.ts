@@ -1,16 +1,24 @@
 import Store, { Schema } from 'electron-store';
 import { Release } from './release';
+import { SoundPackId } from './sound';
 
 export type StoreRelease = Pick<
   Release,
   'html_url' | 'id' | 'node_id' | 'tag_name' | 'name' | 'draft' | 'prerelease' | 'body'
 >;
 
+/*
+electron-storeのmigrationsの使用は、前方互換性の問題を考慮する必要がある。
+リリースの新旧でmigrationsを適用し、electorn-store内のキーの型が変化した場合、旧リリースでの起動ができなくなる。
+この問題を避けるため、キーの型を変えて使いたい場合、別名のキーを使用し、旧キー名は使用不可とする運用を採用する。
+以下のキーは過去に使用されたキーである。
+- [<=1.0.0] sound: boolean
+*/
 type SchemaType = {
   username: string;
   password: string;
   company: string;
-  sound: boolean;
+  soundPack: SoundPackId;
   showDirectly: boolean;
   port: number;
   slack: {
@@ -36,9 +44,9 @@ const schema: Schema<SchemaType> = {
     type: 'string',
     default: '',
   },
-  sound: {
-    type: 'boolean',
-    default: false,
+  soundPack: {
+    type: 'string',
+    default: 'none',
   },
   showDirectly: {
     type: 'boolean',
@@ -81,17 +89,17 @@ type SlackOptions = SchemaType['slack'];
 
 type InitialOptions = Pick<DakokuOptions, 'username' | 'company'> & {
   slack: SlackOptions;
-  sound: SchemaType['sound'];
-  showDirectly: SchemaType['sound'];
+  sound: SchemaType['soundPack'];
+  showDirectly: SchemaType['showDirectly'];
 };
 
 export const initialize = (): void => {
   store = new Store<SchemaType>({ schema });
 };
 
-export const getSound = (): boolean => {
+export const getSound = (): SoundPackId => {
   if (!store) throw new Error('store is not initialized.');
-  return store.get('sound', false);
+  return store.get('soundPack', 'none');
 };
 
 export const getShowDirectly = (): boolean => {
@@ -154,9 +162,9 @@ export const saveSlackOptions = (url: string, icon_emoji: string, username: stri
   store.set('slack.username', username);
 };
 
-export const saveOtherOptions = (sound: boolean, showDirectly: boolean): void => {
+export const saveOtherOptions = (soundPack: SoundPackId, showDirectly: boolean): void => {
   if (!store) throw new Error('store is not initialized.');
-  store.set('sound', sound);
+  store.set('soundPack', soundPack);
   store.set('showDirectly', showDirectly);
 };
 
