@@ -19,9 +19,9 @@ const generateMenuItem = (
   click?: (menuItem: MenuItem) => void
 ): MenuItemConstructorOptions => {
   return {
-    type: type,
-    label: label,
-    click: click,
+    type,
+    label,
+    click,
   };
 };
 
