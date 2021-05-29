@@ -2,7 +2,6 @@ import path from 'path';
 import { Menu, MenuItemConstructorOptions, MenuItem, Tray, app, shell } from 'electron';
 import { TaskType } from './dakoku';
 import { StoreRelease } from './store';
-import { filter } from './utils/conditionTuple';
 
 let tray: Tray | null = null;
 
@@ -58,7 +57,7 @@ const generateMenu = (
     shell.openExternal(storeRelease?.html_url + '');
   });
   const quit = generateMenuItem('normal', '終了', app.quit);
-  const menu: MenuItemConstructorOptions[] = filter([
+  const itemAndCondition: [MenuItemConstructorOptions, boolean][] = [
     [startWork, true],
     [finishWork, true],
     [separator, true],
@@ -73,7 +72,8 @@ const generateMenu = (
     [akashi, true],
     [release, !!storeRelease],
     [quit, true],
-  ]);
+  ];
+  const menu = itemAndCondition.filter(([_, condition]) => condition).map(([item, _]) => item);
   return menu;
 };
 
