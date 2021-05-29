@@ -73,7 +73,12 @@ const generateMenu = (
     [release, !!storeRelease],
     [quit, true],
   ];
-  const menu = itemAndCondition.filter(([_, condition]) => condition).map(([item, _]) => item);
+  const menu = itemAndCondition.reduce((acc: MenuItemConstructorOptions[], [item, condition]) => {
+    if (condition) {
+      acc.push(item);
+    }
+    return acc;
+  }, []);
   return menu;
 };
 
