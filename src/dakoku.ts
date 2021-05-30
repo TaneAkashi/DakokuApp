@@ -131,7 +131,7 @@ export const runByMenu = async (task: TaskType): Promise<void> => {
 
   // 打刻時に更新がないか調べる
   // 打刻通知と被るのを防ぐため10秒程度遅延させる
-  setTimeout(release.doIfReleaseExists, 10000);
+  setTimeout(release.doIfNotLatest, 10000);
 };
 
 export const checkLogin = async (options: Options): Promise<boolean> => {

@@ -1,5 +1,5 @@
 import get from 'axios';
-import { app, Notification, shell } from 'electron';
+import { app, Notification } from 'electron';
 import * as dakoku from './dakoku';
 import * as settingsWindow from './settings-window';
 import * as store from './store';
@@ -48,6 +48,8 @@ export type Release = {
   body: string;
 };
 
+let notified = '';
+
 const fetchLatest = async (): Promise<Release | null> => {
   const version = await get(LATEST_API_URL)
     .then((res) => res.data)
@@ -55,20 +57,44 @@ const fetchLatest = async (): Promise<Release | null> => {
   return version;
 };
 
-export const doIfReleaseExists = async (): Promise<void> => {
-  const release = await fetchLatest();
-  if (release && release.tag_name.slice(1) !== app.getVersion()) {
-    store.saveRelease(release);
-    tray.initialize(settingsWindow.open, dakoku.runByMenu, store.getShowDirectly(), store.getRelease());
-    const notification = new Notification({
-      title: release.tag_name + ' がリリースされました！',
-      body: 'メニューから新しい' + app.getName() + 'を入手しましょう！',
-    });
-    notification.on('click', () => {
-      shell.openExternal(release.html_url);
-    });
-    notification.show();
-  } else {
-    store.saveRelease(null);
+const updateLatest = async (): Promise<void> => {
+  const latest = await fetchLatest();
+  if (latest) {
+    store.saveLatest(latest);
   }
+};
+
+export const isLatest = (): boolean => {
+  const latest = store.getLatest();
+  // タグ名とpackage.jsonのversionを比較する
+  // tag_name: v1.0.0
+  // app.getVersion(): 1.0.0
+  return !!latest && latest.tag_name.slice(1) === app.getVersion();
+};
+
+const notifyIfNotNotified = () => {
+  const latest = store.getLatest();
+
+  if (notified === latest.tag_name) {
+    return;
+  }
+
+  const notification = new Notification({
+    title: latest.tag_name + 'がリリースされました！',
+    body: 'メニューから新しい' + app.getName() + 'を入手しましょう！',
+  });
+  notification.show();
+
+  notified = latest.tag_name;
+};
+
+export const doIfNotLatest = async () => {
+  await updateLatest();
+
+  if (isLatest()) {
+    return;
+  }
+
+  tray.initialize(settingsWindow.open, dakoku.runByMenu, store.getShowDirectly(), store.getLatest());
+  notifyIfNotNotified();
 };

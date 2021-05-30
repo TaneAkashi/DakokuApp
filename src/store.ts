@@ -13,6 +13,7 @@ electron-storeのmigrationsの使用は、前方互換性の問題を考慮す�
 この問題を避けるため、キーの型を変えて使いたい場合、別名のキーを使用し、旧キー名は使用不可とする運用を採用する。
 以下のキーは過去に使用されたキーである。
 - [<=1.0.0] sound: boolean
+- [<=1.1.0] release: object
 */
 type SchemaType = {
   username: string;
@@ -26,7 +27,7 @@ type SchemaType = {
     icon_emoji: string;
     username: string;
   };
-  release: StoreRelease;
+  latest: StoreRelease;
 };
 
 let store: Store<SchemaType> | null = null;
@@ -77,7 +78,7 @@ const schema: Schema<SchemaType> = {
     },
     additionalProperties: false,
   },
-  release: {
+  latest: {
     type: 'object',
     default: undefined,
   },
@@ -133,10 +134,9 @@ export const getDakokuOptions = (): DakokuOptions => {
   };
 };
 
-export const getRelease = (): StoreRelease | null => {
+export const getLatest = (): StoreRelease => {
   if (!store) throw new Error('store is not initialized.');
-  // electron-store schema は object | null のような型を取れないので undefined を null とみなして扱う
-  return store.get('release') || null;
+  return store.get('latest');
 };
 
 export const saveDakokuOptions = (email: string, password: string, company: string): void => {
@@ -168,9 +168,7 @@ export const saveOtherOptions = (soundPack: SoundPackId, showDirectly: boolean):
   store.set('showDirectly', showDirectly);
 };
 
-export const saveRelease = (release: StoreRelease | null): void => {
+export const saveLatest = (latest: StoreRelease): void => {
   if (!store) throw new Error('store is not initialized.');
-  // electron-store schema は object | null のような型を取れないので undefined を null とみなして扱う
-  // electron-store は store.set(..., undefined) を許容しないため delete を行う
-  release ? store.set('release', release) : store.delete('release');
+  store.set('latest', latest);
 };

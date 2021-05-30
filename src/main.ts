@@ -40,5 +40,5 @@ app.whenReady().then(async () => {
   }
 
   // 起動時に更新がないか調べる
-  await release.doIfReleaseExists();
+  release.doIfNotLatest();
 });
