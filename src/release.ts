@@ -88,7 +88,7 @@ const notifyIfNotNotified = () => {
   notified = latest.tag_name;
 };
 
-export const doIfNotLatest = async () => {
+export const doIfNotLatest = async (): Promise<void> => {
   await updateLatest();
 
   if (isLatest()) {
