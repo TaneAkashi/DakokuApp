@@ -48,8 +48,6 @@ export type Release = {
   body: string;
 };
 
-let notified = '';
-
 const fetchLatest = async (): Promise<Release | null> => {
   const version = await get(LATEST_API_URL)
     .then((res) => res.data)
@@ -72,10 +70,14 @@ export const isLatest = (): boolean => {
   return !!latest && latest.tag_name.slice(1) === app.getVersion();
 };
 
+// 通知を管理する変数
+// 同じバージョンに対して行われる通知はアプリのライフサイクル毎に１回
+let notifiedVersion = '';
+
 const notifyIfNotNotified = () => {
   const latest = store.getLatest();
 
-  if (notified === latest.tag_name) {
+  if (notifiedVersion === latest.tag_name) {
     return;
   }
 
@@ -85,7 +87,7 @@ const notifyIfNotNotified = () => {
   });
   notification.show();
 
-  notified = latest.tag_name;
+  notifiedVersion = latest.tag_name;
 };
 
 export const doIfNotLatest = async (): Promise<void> => {
