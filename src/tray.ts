@@ -70,7 +70,7 @@ const generateMenu = (
     [loginAndSetting, true],
     [separator, true],
     [akashi, true],
-    [release, !!storeRelease],
+    [release, storeRelease !== null],
     [quit, true],
   ];
   const menu = itemAndCondition.filter(([, condition]) => condition).map(([item]) => item);
