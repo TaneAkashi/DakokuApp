@@ -1,5 +1,5 @@
 import get from 'axios';
-import { app, Notification } from 'electron';
+import { app, Notification, shell } from 'electron';
 import * as dakoku from './dakoku';
 import * as settingsWindow from './settings-window';
 import * as store from './store';
@@ -84,6 +84,9 @@ const notifyIfNotNotified = () => {
   const notification = new Notification({
     title: latest.tag_name + 'がリリースされました！',
     body: 'メニューから新しい' + app.getName() + 'を入手しましょう！',
+  });
+  notification.on('click', () => {
+    shell.openExternal(latest.html_url);
   });
   notification.show();
 
