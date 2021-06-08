@@ -54,14 +54,14 @@ const generateMenu = (
   // 打刻中は打刻できないようにする
   dakokuItemAndTaskTypes.forEach(([item, taskType]) => {
     const dakokuItems = dakokuItemAndTaskTypes.map(([item]) => item);
-    try {
-      dakokuItems.forEach((item) => (item.enabled = false));
-      item.click = () => {
-        run(taskType);
-      };
-    } finally {
-      dakokuItems.forEach((item) => (item.enabled = true));
-    }
+    item.click = async () => {
+      try {
+        dakokuItems.forEach((item) => (item.enabled = false));
+        await run(taskType);
+      } finally {
+        dakokuItems.forEach((item) => (item.enabled = true));
+      }
+    };
   });
 
   const itemAndCondition: [MenuItem, boolean][] = [
