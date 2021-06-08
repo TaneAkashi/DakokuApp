@@ -16,12 +16,8 @@ const generateMenuItem = (
   type: 'normal' | 'separator',
   label?: string,
   click?: (menuItem: MenuItem) => void
-): MenuItemConstructorOptions => {
-  return {
-    type,
-    label,
-    click,
-  };
+): MenuItem => {
+  return new MenuItem({ type, label, click });
 };
 
 const generateMenu = (
@@ -31,24 +27,12 @@ const generateMenu = (
   storeRelease: StoreRelease | null
 ): (MenuItemConstructorOptions | MenuItem)[] => {
   const separator = generateMenuItem('separator');
-  const startWork = generateMenuItem('normal', '出勤打刻', () => {
-    run('startWork');
-  });
-  const finishWork = generateMenuItem('normal', '退勤打刻', () => {
-    run('finishWork');
-  });
-  const startWorkDirectly = generateMenuItem('normal', '直行打刻', () => {
-    run('startWorkDirectly');
-  });
-  const finishWorkDirectly = generateMenuItem('normal', '直帰打刻', () => {
-    run('finishWorkDirectly');
-  });
-  const pauseWork = generateMenuItem('normal', '私用外出開始', () => {
-    run('pauseWork');
-  });
-  const restartWork = generateMenuItem('normal', '私用外出終了', () => {
-    run('restartWork');
-  });
+  const startWork = generateMenuItem('normal', '出勤打刻');
+  const finishWork = generateMenuItem('normal', '退勤打刻');
+  const startWorkDirectly = generateMenuItem('normal', '直行打刻');
+  const finishWorkDirectly = generateMenuItem('normal', '直帰打刻');
+  const pauseWork = generateMenuItem('normal', '私用外出開始');
+  const restartWork = generateMenuItem('normal', '私用外出終了');
   const loginAndSetting = generateMenuItem('normal', 'ログイン・設定', open);
   const akashi = generateMenuItem('normal', 'AKASHI', () => {
     shell.openExternal('https://atnd.ak4.jp/login');
@@ -57,7 +41,30 @@ const generateMenu = (
     shell.openExternal(storeRelease?.html_url + '');
   });
   const quit = generateMenuItem('normal', '終了', app.quit);
-  const itemAndCondition: [MenuItemConstructorOptions, boolean][] = [
+
+  const dakokuItemAndTaskTypes: [MenuItem, TaskType][] = [
+    [startWork, 'startWork'],
+    [finishWork, 'finishWork'],
+    [startWorkDirectly, 'startWorkDirectly'],
+    [finishWorkDirectly, 'finishWorkDirectly'],
+    [pauseWork, 'pauseWork'],
+    [restartWork, 'restartWork'],
+  ];
+
+  // 打刻中は打刻できないようにする
+  dakokuItemAndTaskTypes.forEach(([item, taskType]) => {
+    const dakokuItems = dakokuItemAndTaskTypes.map(([item]) => item);
+    try {
+      dakokuItems.forEach((item) => (item.enabled = false));
+      item.click = () => {
+        run(taskType);
+      };
+    } finally {
+      dakokuItems.forEach((item) => (item.enabled = true));
+    }
+  });
+
+  const itemAndCondition: [MenuItem, boolean][] = [
     [startWork, true],
     [finishWork, true],
     [separator, true],
