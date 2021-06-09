@@ -34,6 +34,9 @@ const generateMenu = (
   const startWork = generateMenuItem('normal', '出勤打刻', () => {
     run('startWork');
   });
+  const startTelework = generateMenuItem('normal', '出勤打刻・テレワーク開始', () => {
+    run('startTelework');
+  });
   const finishWork = generateMenuItem('normal', '退勤打刻', () => {
     run('finishWork');
   });
@@ -59,6 +62,7 @@ const generateMenu = (
   const quit = generateMenuItem('normal', '終了', app.quit);
   const itemAndCondition: [MenuItemConstructorOptions, boolean][] = [
     [startWork, true],
+    [startTelework, true],
     [finishWork, true],
     [separator, true],
     [startWorkDirectly, showDirectly],
