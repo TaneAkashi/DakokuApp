@@ -43,20 +43,20 @@ const generateMenu = (
   });
   const quit = generateMenuItem('normal', '終了', app.quit);
 
-  const dakokuItemAndTaskTypes: [MenuItem, TaskType][] = [
-    [startWork, 'startWork'],
-    [startTelework, 'startTelework'],
-    [finishWork, 'finishWork'],
-    [startWorkDirectly, 'startWorkDirectly'],
-    [finishWorkDirectly, 'finishWorkDirectly'],
-    [pauseWork, 'pauseWork'],
-    [restartWork, 'restartWork'],
+  const dakokuItemAndTaskTypes: { menuItem: MenuItem; taskType: TaskType }[] = [
+    { menuItem: startWork, taskType: 'startWork' },
+    { menuItem: startTelework, taskType: 'startTelework' },
+    { menuItem: finishWork, taskType: 'finishWork' },
+    { menuItem: startWorkDirectly, taskType: 'startWorkDirectly' },
+    { menuItem: finishWorkDirectly, taskType: 'finishWorkDirectly' },
+    { menuItem: pauseWork, taskType: 'pauseWork' },
+    { menuItem: restartWork, taskType: 'restartWork' },
   ];
 
   // 打刻中は打刻できないようにする
-  dakokuItemAndTaskTypes.forEach(([item, taskType]) => {
-    const dakokuItems = dakokuItemAndTaskTypes.map(([item]) => item);
-    item.click = async () => {
+  dakokuItemAndTaskTypes.forEach(({ menuItem, taskType }) => {
+    const dakokuItems = dakokuItemAndTaskTypes.map(({ menuItem }) => menuItem);
+    menuItem.click = async () => {
       try {
         dakokuItems.forEach((item) => (item.enabled = false));
         await run(taskType);
