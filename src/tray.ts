@@ -28,6 +28,7 @@ const generateMenu = (
 ): (MenuItemConstructorOptions | MenuItem)[] => {
   const separator = generateMenuItem('separator');
   const startWork = generateMenuItem('normal', '出勤打刻');
+  const startTelework = generateMenuItem('normal', '出勤打刻・テレワーク開始');
   const finishWork = generateMenuItem('normal', '退勤打刻');
   const startWorkDirectly = generateMenuItem('normal', '直行打刻');
   const finishWorkDirectly = generateMenuItem('normal', '直帰打刻');
@@ -44,6 +45,7 @@ const generateMenu = (
 
   const dakokuItemAndTaskTypes: [MenuItem, TaskType][] = [
     [startWork, 'startWork'],
+    [startTelework, 'startTelework'],
     [finishWork, 'finishWork'],
     [startWorkDirectly, 'startWorkDirectly'],
     [finishWorkDirectly, 'finishWorkDirectly'],
@@ -66,6 +68,7 @@ const generateMenu = (
 
   const itemAndCondition: [MenuItem, boolean][] = [
     [startWork, true],
+    [startTelework, true],
     [finishWork, true],
     [separator, true],
     [startWorkDirectly, showDirectly],
