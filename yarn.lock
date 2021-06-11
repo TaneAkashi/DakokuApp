@@ -2529,10 +2529,10 @@ puppeteer-core@^8.0.0:
     unbzip2-stream "^1.3.3"
     ws "^7.2.3"
 
-puppeteer-in-electron@^3.0.3:
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/puppeteer-in-electron/-/puppeteer-in-electron-3.0.3.tgz#681030e96fadb7cdea8066e7c183b1bb7524cf07"
-  integrity sha512-8yk8WijXTcNAeU8NHm2b/EWA/xdF89GwzLqo4nUiG88/0tADG0zX/OKI7phuPztotWPQfMd8z3f+W0rvSc5xIg==
+puppeteer-in-electron@^3.0.4:
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/puppeteer-in-electron/-/puppeteer-in-electron-3.0.4.tgz#ac68586e240e42522247e80d445401253b12b441"
+  integrity sha512-nqU9qOll0zVtGhiYTcaMzMOUIZ6+Bevuwy9YCwwaz2sW7vI4r+D3zhPMh7rJsDVKW9xfUl8dGweGJsaBu8W0aw==
   dependencies:
     "@types/async-retry" "^1.4.1"
     "@types/node-fetch" "^2.5.4"
@@ -2540,7 +2540,7 @@ puppeteer-in-electron@^3.0.3:
     "@types/uuid" "^3.4.6"
     async-retry "^1.3.1"
     get-port "^5.1.1"
-    uuid "^3.3.3"
+    uuid "^8.3.2"
 
 queue-microtask@^1.2.2:
   version "1.2.3"
@@ -3155,10 +3155,10 @@ util-deprecate@^1.0.1, util-deprecate@~1.0.1:
   resolved "https://registry.yarnpkg.com/util-deprecate/-/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
   integrity sha1-RQ1Nyfpw3nMnYvvS1KKJgUGaDM8=
 
-uuid@^3.3.3:
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.4.0.tgz#b23e4358afa8a202fe7a100af1f5f883f02007ee"
-  integrity sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==
+uuid@^8.3.2:
+  version "8.3.2"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
+  integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
 
 v8-compile-cache@^2.0.3:
   version "2.3.0"
