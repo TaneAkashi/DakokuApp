@@ -1,7 +1,7 @@
 import path from 'path';
 import { Menu, MenuItemConstructorOptions, MenuItem, Tray, app, shell } from 'electron';
 import { TaskType } from './dakoku';
-import { StoreRelease } from './store';
+import { Release } from './release';
 
 let tray: Tray | null = null;
 
@@ -16,7 +16,7 @@ const generateMenu = (
   open: () => void,
   run: (task: TaskType) => Promise<void>,
   showDirectly: boolean,
-  release: StoreRelease | null
+  release: Release | null
 ): (MenuItemConstructorOptions | MenuItem)[] => {
   const menu: (MenuItemConstructorOptions | MenuItem)[] = [];
 
@@ -125,7 +125,7 @@ export const initialize = (
   open: () => void,
   run: (task: TaskType) => Promise<void>,
   showDirectly: boolean,
-  release: StoreRelease | null = null
+  release: Release | null = null
 ): void => {
   if (tray) {
     tray.destroy();

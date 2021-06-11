@@ -5,9 +5,6 @@ import * as settingsWindow from './settings-window';
 import * as store from './store';
 import * as tray from './tray';
 
-/** @see https://docs.github.com/en/rest/reference/repos#get-the-latest-release */
-const LATEST_API_URL = 'https://api.github.com/repos/TaneAkashi/DakokuApp/releases/latest';
-
 export type Release = {
   url: string;
   assets_url: string;
@@ -48,6 +45,15 @@ export type Release = {
   body: string;
 };
 
+/** @see https://docs.github.com/en/rest/reference/repos#get-the-latest-release */
+const LATEST_API_URL = 'https://api.github.com/repos/TaneAkashi/DakokuApp/releases/latest';
+
+let latestRelease: Release;
+
+export const getLatest = (): Release => {
+  return latestRelease;
+};
+
 const fetchLatest = async (): Promise<Release | null> => {
   const version = await get(LATEST_API_URL)
     .then((res) => res.data)
@@ -58,16 +64,15 @@ const fetchLatest = async (): Promise<Release | null> => {
 const updateLatest = async (): Promise<void> => {
   const latest = await fetchLatest();
   if (latest) {
-    store.saveLatest(latest);
+    latestRelease = latest;
   }
 };
 
 export const isLatest = (): boolean => {
-  const latest = store.getLatest();
   // タグ名とpackage.jsonのversionを比較する
   // tag_name: v1.0.0
   // app.getVersion(): 1.0.0
-  return !!latest && latest.tag_name.slice(1) === app.getVersion();
+  return !!latestRelease && latestRelease.tag_name.slice(1) === app.getVersion();
 };
 
 // 通知を管理する変数
@@ -75,31 +80,28 @@ export const isLatest = (): boolean => {
 let notifiedVersion = '';
 
 const notifyIfNotNotified = () => {
-  const latest = store.getLatest();
-
-  if (notifiedVersion === latest.tag_name) {
+  if (notifiedVersion === latestRelease.tag_name) {
     return;
   }
 
   const notification = new Notification({
-    title: latest.tag_name + 'がリリースされました！',
+    title: latestRelease.tag_name + 'がリリースされました！',
     body: 'メニューから新しい' + app.getName() + 'を入手しましょう！',
   });
   notification.on('click', () => {
-    shell.openExternal(latest.html_url);
+    shell.openExternal(latestRelease.html_url);
   });
   notification.show();
 
-  notifiedVersion = latest.tag_name;
+  notifiedVersion = latestRelease.tag_name;
 };
 
 export const doIfNotLatest = async (): Promise<void> => {
   await updateLatest();
-
   if (isLatest()) {
     return;
   }
 
-  tray.initialize(settingsWindow.open, dakoku.runByMenu, store.getShowDirectly(), store.getLatest());
+  tray.initialize(settingsWindow.open, dakoku.runByMenu, store.getShowDirectly(), latestRelease);
   notifyIfNotNotified();
 };
