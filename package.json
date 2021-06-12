@@ -48,6 +48,6 @@
     "axios": "^0.21.1",
     "electron-store": "^8.0.0",
     "puppeteer-core": "^8.0.0",
-    "puppeteer-in-electron": "^3.0.3"
+    "puppeteer-in-electron": "^3.0.4"
   }
 }
