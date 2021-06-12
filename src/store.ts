@@ -1,11 +1,5 @@
 import Store, { Schema } from 'electron-store';
-import { Release } from './release';
 import { SoundPackId } from './sound';
-
-export type StoreRelease = Pick<
-  Release,
-  'html_url' | 'id' | 'node_id' | 'tag_name' | 'name' | 'draft' | 'prerelease' | 'body'
->;
 
 /*
 electron-storeのmigrationsの使用は、前方互換性の問題を考慮する必要がある。
@@ -14,6 +8,7 @@ electron-storeのmigrationsの使用は、前方互換性の問題を考慮す�
 以下のキーは過去に使用されたキーである。
 - [<=1.0.0] sound: boolean
 - [<=1.1.0] port: number
+- [<=1.1.0] release: object
 */
 type SchemaType = {
   username: string;
@@ -26,7 +21,6 @@ type SchemaType = {
     icon_emoji: string;
     username: string;
   };
-  release: StoreRelease;
 };
 
 let store: Store<SchemaType> | null = null;
@@ -72,10 +66,6 @@ const schema: Schema<SchemaType> = {
       url: '',
     },
     additionalProperties: false,
-  },
-  release: {
-    type: 'object',
-    default: undefined,
   },
 };
 
@@ -124,12 +114,6 @@ export const getDakokuOptions = (): DakokuOptions => {
   };
 };
 
-export const getRelease = (): StoreRelease | null => {
-  if (!store) throw new Error('store is not initialized.');
-  // electron-store schema は object | null のような型を取れないので undefined を null とみなして扱う
-  return store.get('release') || null;
-};
-
 export const saveDakokuOptions = (email: string, password: string, company: string): void => {
   if (!store) throw new Error('store is not initialized.');
   store.set('username', email);
@@ -157,11 +141,4 @@ export const saveOtherOptions = (soundPack: SoundPackId, showDirectly: boolean):
   if (!store) throw new Error('store is not initialized.');
   store.set('soundPack', soundPack);
   store.set('showDirectly', showDirectly);
-};
-
-export const saveRelease = (release: StoreRelease | null): void => {
-  if (!store) throw new Error('store is not initialized.');
-  // electron-store schema は object | null のような型を取れないので undefined を null とみなして扱う
-  // electron-store は store.set(..., undefined) を許容しないため delete を行う
-  release ? store.set('release', release) : store.delete('release');
 };

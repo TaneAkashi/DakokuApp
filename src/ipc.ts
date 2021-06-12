@@ -3,6 +3,7 @@ import * as dakoku from './dakoku';
 import * as settingsWindow from './settings-window';
 import * as store from './store';
 import * as tray from './tray';
+import * as release from './release';
 
 export const subscribe = (): void => {
   ipcMain.handle(
@@ -28,6 +29,6 @@ export const subscribe = (): void => {
 
   ipcMain.handle('saveOtherOptions', (event, sound, showDirectly) => {
     store.saveOtherOptions(sound, showDirectly);
-    tray.initialize(settingsWindow.open, dakoku.runByMenu, store.getShowDirectly(), store.getRelease());
+    tray.initialize(settingsWindow.open, dakoku.runByMenu, store.getShowDirectly(), release.getLatest());
   });
 };
