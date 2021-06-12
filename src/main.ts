@@ -9,8 +9,7 @@ import * as release from './release';
 
 const initialize = async () => {
   await store.initialize();
-  const port = store.getPort();
-  await pptr.initialize(app, port);
+  await pptr.initialize(app);
 };
 const initializePromise = initialize();
 
