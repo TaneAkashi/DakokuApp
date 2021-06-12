@@ -5,9 +5,6 @@ import * as settingsWindow from './settings-window';
 import * as store from './store';
 import * as tray from './tray';
 
-/** @see https://docs.github.com/en/rest/reference/repos#get-the-latest-release */
-const LATEST_API_URL = 'https://api.github.com/repos/TaneAkashi/DakokuApp/releases/latest';
-
 export type Release = {
   url: string;
   assets_url: string;
@@ -48,6 +45,16 @@ export type Release = {
   body: string;
 };
 
+/** @see https://docs.github.com/en/rest/reference/repos#get-the-latest-release */
+const LATEST_API_URL = 'https://api.github.com/repos/TaneAkashi/DakokuApp/releases/latest';
+
+// 最新の Release 情報
+let latestRelease: Release;
+
+export const getLatest = (): Release => {
+  return latestRelease;
+};
+
 const fetchLatest = async (): Promise<Release | null> => {
   const version = await get(LATEST_API_URL)
     .then((res) => res.data)
@@ -55,20 +62,47 @@ const fetchLatest = async (): Promise<Release | null> => {
   return version;
 };
 
-export const doIfReleaseExists = async (): Promise<void> => {
-  const release = await fetchLatest();
-  if (release && release.tag_name.slice(1) !== app.getVersion()) {
-    store.saveRelease(release);
-    tray.initialize(settingsWindow.open, dakoku.runByMenu, store.getShowDirectly(), store.getRelease());
-    const notification = new Notification({
-      title: release.tag_name + ' がリリースされました！',
-      body: 'メニューから新しい' + app.getName() + 'を入手しましょう！',
-    });
-    notification.on('click', () => {
-      shell.openExternal(release.html_url);
-    });
-    notification.show();
-  } else {
-    store.saveRelease(null);
+const updateLatest = async (): Promise<void> => {
+  const latest = await fetchLatest();
+  if (latest) {
+    latestRelease = latest;
   }
+};
+
+export const isLatest = (): boolean => {
+  // タグ名とpackage.jsonのversionを比較する
+  // tag_name: v1.0.0
+  // app.getVersion(): 1.0.0
+  return !!latestRelease && latestRelease.tag_name.slice(1) === app.getVersion();
+};
+
+// 通知を管理する変数
+// 同じバージョンに対して行われる通知はアプリのライフサイクル毎に１回
+let notifiedVersion = '';
+
+const notifyIfNotNotified = () => {
+  if (notifiedVersion === latestRelease.tag_name) {
+    return;
+  }
+
+  const notification = new Notification({
+    title: latestRelease.tag_name + 'がリリースされました！',
+    body: 'メニューから新しい' + app.getName() + 'を入手しましょう！',
+  });
+  notification.on('click', () => {
+    shell.openExternal(latestRelease.html_url);
+  });
+  notification.show();
+
+  notifiedVersion = latestRelease.tag_name;
+};
+
+export const doIfNotLatest = async (): Promise<void> => {
+  await updateLatest();
+  if (isLatest()) {
+    return;
+  }
+
+  tray.initialize(settingsWindow.open, dakoku.runByMenu, store.getShowDirectly(), latestRelease);
+  notifyIfNotNotified();
 };

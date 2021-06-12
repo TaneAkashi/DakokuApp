@@ -1,7 +1,7 @@
 import path from 'path';
 import { Menu, MenuItemConstructorOptions, MenuItem, Tray, app, shell } from 'electron';
 import { TaskType } from './dakoku';
-import { StoreRelease } from './store';
+import { Release } from './release';
 
 let tray: Tray | null = null;
 
@@ -28,7 +28,7 @@ const generateMenu = (
   open: () => void,
   run: (task: TaskType) => Promise<void>,
   showDirectly: boolean,
-  storeRelease: StoreRelease | null
+  release: Release | null
 ): (MenuItemConstructorOptions | MenuItem)[] => {
   const separator = generateMenuItem('separator');
   const startWork = generateMenuItem('normal', '出勤打刻', () => {
@@ -56,8 +56,8 @@ const generateMenu = (
   const akashi = generateMenuItem('normal', 'AKASHI', () => {
     shell.openExternal('https://atnd.ak4.jp/login');
   });
-  const release = generateMenuItem('normal', `🌟DakokuApp: ${storeRelease?.name}を入手する🌟`, () => {
-    shell.openExternal(storeRelease?.html_url + '');
+  const releaseLink = generateMenuItem('normal', `🌟DakokuApp: ${release?.name}を入手する🌟`, () => {
+    shell.openExternal(release?.html_url + '');
   });
   const quit = generateMenuItem('normal', '終了', app.quit);
   const itemAndCondition: [MenuItemConstructorOptions, boolean][] = [
@@ -74,7 +74,7 @@ const generateMenu = (
     [loginAndSetting, true],
     [separator, true],
     [akashi, true],
-    [release, storeRelease !== null],
+    [releaseLink, release !== null],
     [quit, true],
   ];
   const menu = itemAndCondition.filter(([, condition]) => condition).map(([item]) => item);
@@ -85,7 +85,7 @@ export const initialize = (
   open: () => void,
   run: (task: TaskType) => Promise<void>,
   showDirectly: boolean,
-  release: StoreRelease | null = null
+  release: Release | null = null
 ): void => {
   if (tray) {
     tray.destroy();
