@@ -13,6 +13,7 @@ electron-storeのmigrationsの使用は、前方互換性の問題を考慮す�
 この問題を避けるため、キーの型を変えて使いたい場合、別名のキーを使用し、旧キー名は使用不可とする運用を採用する。
 以下のキーは過去に使用されたキーである。
 - [<=1.0.0] sound: boolean
+- [<=1.1.0] port: number
 */
 type SchemaType = {
   username: string;
@@ -20,7 +21,6 @@ type SchemaType = {
   company: string;
   soundPack: SoundPackId;
   showDirectly: boolean;
-  port: number;
   slack: {
     url: string;
     icon_emoji: string;
@@ -51,10 +51,6 @@ const schema: Schema<SchemaType> = {
   showDirectly: {
     type: 'boolean',
     default: false,
-  },
-  port: {
-    type: 'number',
-    default: 9999,
   },
   slack: {
     type: 'object',
@@ -105,11 +101,6 @@ export const getSound = (): SoundPackId => {
 export const getShowDirectly = (): boolean => {
   if (!store) throw new Error('store is not initialized.');
   return store.get('showDirectly', false);
-};
-
-export const getPort = (): number => {
-  if (!store) throw new Error('store is not initialized.');
-  return store.get('port', 9999);
 };
 
 export const getInitialOptions = (): InitialOptions => {

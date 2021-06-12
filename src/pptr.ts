@@ -4,8 +4,8 @@ import pie from 'puppeteer-in-electron';
 
 let browser: puppeteer.Browser | null = null;
 
-export const initialize = async (app: App, port: number): Promise<void> => {
-  await pie.initialize(app, port);
+export const initialize = async (app: App): Promise<void> => {
+  await pie.initialize(app);
   browser = await pie.connect(app, puppeteer);
 };
 
