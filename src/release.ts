@@ -48,6 +48,7 @@ export type Release = {
 /** @see https://docs.github.com/en/rest/reference/repos#get-the-latest-release */
 const LATEST_API_URL = 'https://api.github.com/repos/TaneAkashi/DakokuApp/releases/latest';
 
+// 最新の Release 情報
 let latestRelease: Release;
 
 export const getLatest = (): Release => {
