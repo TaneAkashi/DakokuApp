@@ -1,4 +1,5 @@
 import Store, { Schema } from 'electron-store';
+import { getEncryptionKey } from './keytar';
 import { SoundPackId } from './sound';
 
 /*
@@ -83,8 +84,9 @@ type InitialOptions = Pick<DakokuOptions, 'username' | 'company'> & {
   showDirectly: SchemaType['showDirectly'];
 };
 
-export const initialize = (): void => {
-  store = new Store<SchemaType>({ schema });
+export const initialize = async (): Promise<void> => {
+  const encryptionKey = await getEncryptionKey();
+  store = new Store<SchemaType>({ schema, encryptionKey });
 };
 
 export const getSound = (): SoundPackId => {

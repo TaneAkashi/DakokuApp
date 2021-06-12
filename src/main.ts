@@ -8,7 +8,7 @@ import * as tray from './tray';
 import * as release from './release';
 
 const initialize = async () => {
-  store.initialize();
+  await store.initialize();
   const port = store.getPort();
   await pptr.initialize(app, port);
 };
