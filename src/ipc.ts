@@ -1,5 +1,6 @@
 import { ipcMain } from 'electron';
 import * as dakoku from './dakoku';
+import * as slack from './slack';
 import * as settingsWindow from './settings-window';
 import * as store from './store';
 import * as tray from './tray';
@@ -23,9 +24,21 @@ export const subscribe = (): void => {
     }
   );
 
-  ipcMain.handle('saveSlackOptions', (event, url, icon_emoji, username) => {
-    store.saveSlackOptions(url, icon_emoji, username);
-  });
+  ipcMain.handle(
+    'saveSlackOptions',
+    async (event, url, icon_emoji, username): Promise<{ success: boolean; message: string }> => {
+      const result = slack
+        .sendMessage({ url, icon_emoji, username }, '投稿テスト')
+        .then(() => {
+          return { success: true, message: '保存しました' };
+        })
+        .catch(() => {
+          return { success: false, message: '投稿に失敗しました' };
+        });
+      store.saveSlackOptions(url, icon_emoji, username);
+      return result;
+    }
+  );
 
   ipcMain.handle('saveOtherOptions', (event, sound, showDirectly) => {
     store.saveOtherOptions(sound, showDirectly);
