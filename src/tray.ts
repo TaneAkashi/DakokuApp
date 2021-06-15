@@ -21,7 +21,8 @@ const generateMenuItem = (
 };
 
 const generateMenu = (
-  open: () => void,
+  openSettingWindow: () => void,
+  openAboutWindow: () => void,
   run: (task: TaskType) => Promise<void>,
   showDirectly: boolean,
   release: Release | null
@@ -34,10 +35,11 @@ const generateMenu = (
   const finishWorkDirectly = generateMenuItem('normal', '直帰打刻');
   const pauseWork = generateMenuItem('normal', '私用外出開始');
   const restartWork = generateMenuItem('normal', '私用外出終了');
-  const loginAndSetting = generateMenuItem('normal', 'ログイン・設定', open);
+  const loginAndSetting = generateMenuItem('normal', 'ログイン・設定', openSettingWindow);
   const akashi = generateMenuItem('normal', 'AKASHI', () => {
-    shell.openExternal('https://atnd.ak4.jp/login');
+    shell.openExternal('https://atnd.ak4.jp');
   });
+  const aboutDakokuApp = generateMenuItem('normal', 'About DakokuApp', openAboutWindow);
   const releaseLink = generateMenuItem('normal', `🌟DakokuApp: ${release?.name}を入手する🌟`, () => {
     shell.openExternal(release?.html_url + '');
   });
@@ -80,6 +82,7 @@ const generateMenu = (
     [loginAndSetting, true],
     [separator, true],
     [akashi, true],
+    [aboutDakokuApp, true],
     [releaseLink, release !== null],
     [quit, true],
   ];
@@ -88,7 +91,8 @@ const generateMenu = (
 };
 
 export const initialize = (
-  open: () => void,
+  openSettingWindow: () => void,
+  openAboutWindow: () => void,
   run: (task: TaskType) => Promise<void>,
   showDirectly: boolean,
   release: Release | null = null
@@ -98,6 +102,8 @@ export const initialize = (
   }
 
   tray = new Tray(icon);
-  const contextMenu = Menu.buildFromTemplate(generateMenu(open, run, showDirectly, release));
+  const contextMenu = Menu.buildFromTemplate(
+    generateMenu(openSettingWindow, openAboutWindow, run, showDirectly, release)
+  );
   tray.setContextMenu(contextMenu);
 };
