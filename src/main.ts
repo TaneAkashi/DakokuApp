@@ -3,7 +3,6 @@ import * as dakoku from './dakoku';
 import * as ipc from './ipc';
 import * as pptr from './pptr';
 import * as settingsWindow from './settings-window';
-import * as aboutWindow from './about-window';
 import * as store from './store';
 import * as tray from './tray';
 import * as release from './release';
@@ -31,7 +30,7 @@ app.whenReady().then(async () => {
   await initializePromise;
 
   // Tray 表示
-  tray.initialize(settingsWindow.open, aboutWindow.open, dakoku.runByMenu, store.getShowDirectly());
+  tray.initialize(settingsWindow.open, dakoku.runByMenu, store.getShowDirectly());
 
   // 設定の登録がない場合はウィンドウを開く
   const dakokuOptions = store.getDakokuOptions();

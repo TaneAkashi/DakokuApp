@@ -2,7 +2,6 @@ import get from 'axios';
 import { app, Notification, shell } from 'electron';
 import * as dakoku from './dakoku';
 import * as settingsWindow from './settings-window';
-import * as aboutWindow from './about-window';
 import * as store from './store';
 import * as tray from './tray';
 
@@ -104,6 +103,6 @@ export const doIfNotLatest = async (): Promise<void> => {
     return;
   }
 
-  tray.initialize(settingsWindow.open, aboutWindow.open, dakoku.runByMenu, store.getShowDirectly(), latestRelease);
+  tray.initialize(settingsWindow.open, dakoku.runByMenu, store.getShowDirectly(), latestRelease);
   notifyIfNotNotified();
 };
