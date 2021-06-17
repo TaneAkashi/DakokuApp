@@ -1,16 +1,20 @@
 import path from 'path';
 import { Menu, MenuItemConstructorOptions, MenuItem, Tray, app, shell } from 'electron';
+import openAboutWindow from 'about-window';
 import { TaskType } from './dakoku';
 import { Release } from './release';
 
 let tray: Tray | null = null;
 
-const getIcon = (): string => {
+const getIconResourcePath = (iconPath: string): string => {
   return process.env.NODE_ENV !== 'development'
-    ? path.join(process.resourcesPath, 'img/TrayIconTemplate.png')
-    : 'img/TrayIconTemplate.png';
+    ? path.join(process.resourcesPath, iconPath)
+    : path.join(__dirname, '..', iconPath);
 };
-const icon = getIcon();
+const icon = getIconResourcePath('img/icon.png');
+const trayIcon = getIconResourcePath('img/TrayIconTemplate.png');
+
+console.log(icon);
 
 const generateMenuItem = (
   type: 'normal' | 'separator',
@@ -37,6 +41,15 @@ const generateMenu = (
   const loginAndSetting = generateMenuItem('normal', 'ログイン・設定', open);
   const akashi = generateMenuItem('normal', 'AKASHI', () => {
     shell.openExternal('https://atnd.ak4.jp/login');
+  });
+  const aboutDakokuApp = generateMenuItem('normal', 'About DakokuApp', () => {
+    openAboutWindow({
+      icon_path: icon,
+      homepage: 'https://github.com/TaneAkashi/DakokuApp',
+      bug_report_url: 'https://github.com/TaneAkashi/DakokuApp/issues',
+      copyright: 'Copyright ©️ 2021 DakokuApp',
+      use_version_info: true,
+    });
   });
   const releaseLink = generateMenuItem('normal', `🌟DakokuApp: ${release?.name}を入手する🌟`, () => {
     shell.openExternal(release?.html_url + '');
@@ -80,6 +93,7 @@ const generateMenu = (
     [loginAndSetting, true],
     [separator, true],
     [akashi, true],
+    [aboutDakokuApp, true],
     [releaseLink, release !== null],
     [quit, true],
   ];
@@ -97,7 +111,7 @@ export const initialize = (
     tray.destroy();
   }
 
-  tray = new Tray(icon);
+  tray = new Tray(trayIcon);
   const contextMenu = Menu.buildFromTemplate(generateMenu(open, run, showDirectly, release));
   tray.setContextMenu(contextMenu);
 };
