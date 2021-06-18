@@ -14,8 +14,6 @@ const getIconResourcePath = (iconPath: string): string => {
 const icon = getIconResourcePath('img/icon.png');
 const trayIcon = getIconResourcePath('img/TrayIconTemplate.png');
 
-console.log(icon);
-
 const generateMenuItem = (
   type: 'normal' | 'separator',
   label?: string,
