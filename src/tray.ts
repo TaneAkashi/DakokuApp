@@ -40,7 +40,7 @@ const generateMenu = (
   const akashi = generateMenuItem('normal', 'AKASHI', () => {
     shell.openExternal('https://atnd.ak4.jp/login');
   });
-  const aboutDakokuApp = generateMenuItem('normal', 'About DakokuApp', () => {
+  const aboutDakokuApp = generateMenuItem('normal', 'DakokuApp について', () => {
     openAboutWindow({
       icon_path: icon,
       homepage: 'https://github.com/TaneAkashi/DakokuApp',
