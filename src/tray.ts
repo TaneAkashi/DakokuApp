@@ -1,18 +1,10 @@
-import path from 'path';
 import { Menu, MenuItemConstructorOptions, MenuItem, Tray, app, shell } from 'electron';
 import openAboutWindow from 'about-window';
 import { TaskType } from './dakoku';
 import { Release } from './release';
+import { getPath } from './resource';
 
 let tray: Tray | null = null;
-
-const getIconResourcePath = (iconPath: string): string => {
-  return process.env.NODE_ENV !== 'development'
-    ? path.join(process.resourcesPath, iconPath)
-    : path.join(__dirname, '..', iconPath);
-};
-const icon = getIconResourcePath('img/icon.png');
-const trayIcon = getIconResourcePath('img/TrayIconTemplate.png');
 
 const generateMenuItem = (
   type: 'normal' | 'separator',
@@ -42,7 +34,7 @@ const generateMenu = (
   });
   const aboutDakokuApp = generateMenuItem('normal', 'DakokuApp について', () => {
     openAboutWindow({
-      icon_path: icon,
+      icon_path: getPath('icon'),
       homepage: 'https://github.com/TaneAkashi/DakokuApp',
       bug_report_url: 'https://github.com/TaneAkashi/DakokuApp/issues',
       copyright: 'Copyright ©️ 2021 DakokuApp',
@@ -109,7 +101,7 @@ export const initialize = (
     tray.destroy();
   }
 
-  tray = new Tray(trayIcon);
+  tray = new Tray(getPath('trayIcon'));
   const contextMenu = Menu.buildFromTemplate(generateMenu(open, run, showDirectly, release));
   tray.setContextMenu(contextMenu);
 };
