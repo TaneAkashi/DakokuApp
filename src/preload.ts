@@ -36,12 +36,12 @@ window.addEventListener('DOMContentLoaded', () => {
 
   (document.getElementById('slack') as HTMLFormElement).addEventListener('submit', async (event) => {
     event.preventDefault();
-    await saveSlackOptions(
+    const { message } = await saveSlackOptions(
       (document.getElementById('slack-url') as HTMLInputElement).value,
       (document.getElementById('slack-icon_emoji') as HTMLInputElement).value,
       (document.getElementById('slack-username') as HTMLInputElement).value
     );
-    alert('保存しました');
+    alert(message);
   });
 
   (document.getElementById('other') as HTMLFormElement).addEventListener('submit', async (event) => {
