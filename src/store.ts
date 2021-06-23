@@ -1,5 +1,5 @@
 import Store, { Schema } from 'electron-store';
-import { getEncryptionKey } from './keytar';
+import { getEncryptionKey } from './keychain';
 import { SoundPackId } from './sound';
 
 /*
