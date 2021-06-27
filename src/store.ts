@@ -85,7 +85,7 @@ export const initialize = async (): Promise<Store<SchemaType>> => {
   store = new Store<SchemaType>({
     schema,
     encryptionKey,
-    // 起動時に暗号化させるために空のmigrationsを指定
+    // 起動時に設定ファイルを暗号化するために空のmigrationsを指定
     migrations: {},
   });
   return store;
