@@ -1,4 +1,5 @@
 import Store, { Schema } from 'electron-store';
+import { getEncryptionKey } from './keychain';
 import { SoundPackId } from './sound';
 
 /*
@@ -82,6 +83,7 @@ type InitialOptions = Pick<DakokuOptions, 'username' | 'company'> & {
 export const initialize = (): void => {
   store = new Store<SchemaType>({
     schema,
+    encryptionKey,
     migrations: {
       '>=2.0.0': (store) => {
         // v2.0.0 より前に不使用になったフィールドを削除
