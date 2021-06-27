@@ -80,9 +80,15 @@ type InitialOptions = Pick<DakokuOptions, 'username' | 'company'> & {
   showDirectly: SchemaType['showDirectly'];
 };
 
-export const initialize = async (): Promise<void> => {
+export const initialize = async (): Promise<Store<SchemaType>> => {
   const encryptionKey = await getEncryptionKey();
-  store = new Store<SchemaType>({ schema, encryptionKey });
+  store = new Store<SchemaType>({
+    schema,
+    encryptionKey,
+    // 起動時に暗号化させるために空のmigrationsを指定
+    migrations: {},
+  });
+  return store;
 };
 
 export const getSound = (): SoundPackId => {
