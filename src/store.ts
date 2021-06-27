@@ -84,6 +84,7 @@ export const initialize = (): void => {
     schema,
     migrations: {
       '>=2.0.0': (store) => {
+        // v1 で削除されたフィールドを削除
         store.delete('sound' as keyof SchemaType);
         store.delete('port' as keyof SchemaType);
         store.delete('release' as keyof SchemaType);
