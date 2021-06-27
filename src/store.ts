@@ -80,7 +80,7 @@ type InitialOptions = Pick<DakokuOptions, 'username' | 'company'> & {
   showDirectly: SchemaType['showDirectly'];
 };
 
-export const initialize = (): void => {
+export const initialize = async (): Promise<void> => {
   const encryptionKey = await getEncryptionKey();
   store = new Store<SchemaType>({
     schema,
