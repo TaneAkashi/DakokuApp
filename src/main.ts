@@ -7,9 +7,13 @@ import * as store from './store';
 import * as tray from './tray';
 import * as release from './release';
 
+/**
+ * electron の初期化に依存しない機能の初期化処理
+ * pptr.initialize 関数はelectronの初期化処理が完了する前（= app.isReady が false の間） に呼ばれる必要がある
+ */
 const initialize = async () => {
-  store.initialize();
   await pptr.initialize(app);
+  await store.initialize();
 };
 const initializePromise = initialize();
 
@@ -26,7 +30,7 @@ app.whenReady().then(async () => {
   const notification = new Notification();
   notification.close();
 
-  // 初期化処理待機
+  // 初期化処理完了待機
   await initializePromise;
 
   // Tray 表示
