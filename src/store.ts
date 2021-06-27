@@ -81,6 +81,7 @@ type InitialOptions = Pick<DakokuOptions, 'username' | 'company'> & {
 };
 
 export const initialize = (): void => {
+  const encryptionKey = await getEncryptionKey();
   store = new Store<SchemaType>({
     schema,
     encryptionKey,
