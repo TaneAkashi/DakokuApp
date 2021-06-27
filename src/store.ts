@@ -80,7 +80,16 @@ type InitialOptions = Pick<DakokuOptions, 'username' | 'company'> & {
 };
 
 export const initialize = (): void => {
-  store = new Store<SchemaType>({ schema });
+  store = new Store<SchemaType>({
+    schema,
+    migrations: {
+      '>=2.0.0': (store) => {
+        store.delete('sound' as keyof SchemaType);
+        store.delete('port' as keyof SchemaType);
+        store.delete('release' as keyof SchemaType);
+      },
+    },
+  });
 };
 
 export const getSound = (): SoundPackId => {
