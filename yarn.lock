@@ -2683,10 +2683,10 @@ puppeteer-core@^8.0.0:
     unbzip2-stream "^1.3.3"
     ws "^7.2.3"
 
-puppeteer-in-electron@^3.0.4:
-  version "3.0.4"
-  resolved "https://registry.yarnpkg.com/puppeteer-in-electron/-/puppeteer-in-electron-3.0.4.tgz#ac68586e240e42522247e80d445401253b12b441"
-  integrity sha512-nqU9qOll0zVtGhiYTcaMzMOUIZ6+Bevuwy9YCwwaz2sW7vI4r+D3zhPMh7rJsDVKW9xfUl8dGweGJsaBu8W0aw==
+puppeteer-in-electron@^3.0.5:
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/puppeteer-in-electron/-/puppeteer-in-electron-3.0.5.tgz#52b493d9376d233fa9d20062334b3ac3736f3380"
+  integrity sha512-GjuPRMweteeBST9aXcFagAEiaIeQYKZaWX/4QBnMqRBQ4bEXPJkFd5p8oc6ovPbe1eriVHef2D2gr/Gv+3HTpQ==
   dependencies:
     "@types/async-retry" "^1.4.1"
     "@types/node-fetch" "^2.5.4"
