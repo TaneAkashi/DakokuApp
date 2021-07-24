@@ -1,4 +1,5 @@
 import { app } from 'electron';
+import log from 'electron-log';
 import { getPassword, setPassword } from 'keytar';
 
 const generateEncryptionKey = () => {
@@ -11,6 +12,7 @@ export const getEncryptionKey = async (): Promise<string> => {
 
   let encryptionKey = await getPassword(service, account);
   if (encryptionKey === null) {
+    log.info('EncryptionKey not found. Generate new one.');
     encryptionKey = generateEncryptionKey();
     setPassword(service, account, encryptionKey);
   }

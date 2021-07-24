@@ -1,4 +1,5 @@
 import { Menu, MenuItemConstructorOptions, MenuItem, Tray, app, shell } from 'electron';
+import log from 'electron-log';
 import openAboutWindow from 'about-window';
 import { TaskType } from './dakoku';
 import { Release } from './release';
