@@ -1,14 +1,13 @@
 import * as akashi from 'akashi-dakoku-core';
 import { BrowserWindow, Notification } from 'electron';
-import log from 'electron-log';
 import { Block, KnownBlock } from '@slack/types';
 import * as pptr from './pptr';
 import * as slack from './slack';
 import * as sound from './sound';
 import * as store from './store';
 import * as release from './release';
+import * as log from './log';
 import { sleep } from './utils/sleep';
-import { valueOf } from './utils/types';
 
 export type TaskType = keyof ReturnType<typeof akashi.dakoku>;
 
@@ -34,15 +33,9 @@ const endRun = (win: BrowserWindow) => {
 };
 
 export const run = async (task: TaskType, options: Options): Promise<akashi.Result> => {
-  const wrapLog = (f: valueOf<log.LogFunctions>, ...params: any[]) => {
-    f(`[task: ${task}]`, ...params);
-  };
-
-  wrapLog(log.info, `start to run. options: ${options}`);
   if (running) throw new Error('別の処理が実行されています');
 
   const win = startRun();
-
   try {
     // 打刻処理
     const run = async () => {
@@ -54,23 +47,21 @@ export const run = async (task: TaskType, options: Options): Promise<akashi.Resu
     // 10秒でタイムアウトでエラーにする
     const timerForTimeout = async (): Promise<void> => {
       await sleep(10000);
-      wrapLog(log.warn, 'run timed out.');
       throw new Error('タイムアウトしました');
     };
 
     // Promise.race で早く終了したほうを返す
     // timerForTimeout は resolve しないため、as で型を指定している
     const result = (await Promise.race([run(), timerForTimeout()])) as akashi.Result;
-    wrapLog(log.info, `success to run. result: ${result}`);
-
+    log.info('success to run.', { result });
     endRun(win);
 
     return result;
-  } catch (e) {
-    wrapLog(log.warn, `failed to run. Error: ${e}`);
+  } catch (error) {
+    log.warn('failed to run.', error);
     endRun(win);
 
-    throw e;
+    throw error;
   }
 };
 
@@ -128,7 +119,7 @@ export const runByMenu = async (task: TaskType): Promise<void> => {
     });
 
   sound.play(payload.sound.packId, payload.sound.taskType);
-  log.debug('sound play.', payload.sound);
+  log.debug('sound play.', { sound: payload.sound });
 
   const notification = new Notification({
     ...payload.notification,
@@ -139,7 +130,7 @@ export const runByMenu = async (task: TaskType): Promise<void> => {
 
   if (slackOptions.url) {
     await slack.sendMessage(slackOptions, payload.slack.text, payload.slack.blocks);
-    log.debug('slack sendMessage.', payload.slack, slackOptions);
+    log.debug('slack sendMessage.', { slack: payload.slack, slackOptions });
   }
 
   // 打刻時に更新がないか調べる

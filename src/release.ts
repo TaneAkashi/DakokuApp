@@ -1,10 +1,10 @@
-import log from 'electron-log';
 import get from 'axios';
 import { app, Notification, shell } from 'electron';
 import * as dakoku from './dakoku';
 import * as settingsWindow from './settings-window';
 import * as store from './store';
 import * as tray from './tray';
+import * as log from './log';
 
 export type Release = {
   url: string;
@@ -100,12 +100,13 @@ const notifyIfNotNotified = () => {
 
 export const doIfNotLatest = async (): Promise<void> => {
   await updateLatest();
+  const appVersion = app.getVersion();
   if (isLatest()) {
-    log.debug(`App is latest. App version: ${app.getVersion()}`);
+    log.debug('App is latest.', { appVersion });
     return;
   }
 
-  log.info(`Found latest release. latestRelease: ${latestRelease}, App version: ${app.getVersion()}`);
+  log.info('Found latest release.', { appVersion, latestRelease });
   tray.initialize(settingsWindow.open, dakoku.runByMenu, store.getShowDirectly(), latestRelease);
   notifyIfNotNotified();
 };

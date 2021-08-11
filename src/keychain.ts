@@ -1,6 +1,6 @@
 import { app } from 'electron';
-import log from 'electron-log';
 import { getPassword, setPassword } from 'keytar';
+import * as log from './log';
 
 const generateEncryptionKey = () => {
   return Math.random().toString(36);

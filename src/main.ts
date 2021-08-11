@@ -1,5 +1,4 @@
 import { BrowserWindow, Notification, app } from 'electron';
-import log from 'electron-log';
 import * as dakoku from './dakoku';
 import * as ipc from './ipc';
 import * as pptr from './pptr';
@@ -7,16 +6,7 @@ import * as settingsWindow from './settings-window';
 import * as store from './store';
 import * as tray from './tray';
 import * as release from './release';
-
-log.info(`${app.getName()} process has launched.`);
-
-process.on('unhandledRejection', (err, p) => {
-  log.error(err);
-});
-process.on('uncaughtException', (err) => {
-  log.error(err);
-  app.quit();
-});
+import * as log from './log';
 
 /**
  * electron の初期化に依存しない機能の初期化処理
@@ -25,6 +15,7 @@ process.on('uncaughtException', (err) => {
 const initialize = async () => {
   await pptr.initialize(app);
   await store.initialize();
+  log.initialize();
 };
 const initializePromise = initialize();
 
