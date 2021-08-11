@@ -6,6 +6,7 @@ import * as slack from './slack';
 import * as sound from './sound';
 import * as store from './store';
 import * as release from './release';
+import * as log from './log';
 import { sleep } from './utils/sleep';
 
 export type TaskType = keyof ReturnType<typeof akashi.dakoku>;
@@ -35,7 +36,6 @@ export const run = async (task: TaskType, options: Options): Promise<akashi.Resu
   if (running) throw new Error('別の処理が実行されています');
 
   const win = startRun();
-
   try {
     // 打刻処理
     const run = async () => {
@@ -53,14 +53,15 @@ export const run = async (task: TaskType, options: Options): Promise<akashi.Resu
     // Promise.race で早く終了したほうを返す
     // timerForTimeout は resolve しないため、as で型を指定している
     const result = (await Promise.race([run(), timerForTimeout()])) as akashi.Result;
-
+    log.info('success to run.', { result });
     endRun(win);
 
     return result;
-  } catch (e) {
+  } catch (error) {
+    log.warn('failed to run.', error);
     endRun(win);
 
-    throw e;
+    throw error;
   }
 };
 
@@ -118,15 +119,18 @@ export const runByMenu = async (task: TaskType): Promise<void> => {
     });
 
   sound.play(payload.sound.packId, payload.sound.taskType);
+  log.debug('sound play.', { sound: payload.sound });
 
   const notification = new Notification({
     ...payload.notification,
     timeoutType: 'default',
   });
   notification.show();
+  log.debug('notification show.', payload.notification);
 
   if (slackOptions.url) {
     await slack.sendMessage(slackOptions, payload.slack.text, payload.slack.blocks);
+    log.debug('slack sendMessage.', { slack: payload.slack, slackOptions });
   }
 
   // 打刻時に更新がないか調べる

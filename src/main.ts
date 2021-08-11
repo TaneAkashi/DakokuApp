@@ -6,6 +6,7 @@ import * as settingsWindow from './settings-window';
 import * as store from './store';
 import * as tray from './tray';
 import * as release from './release';
+import * as log from './log';
 
 /**
  * electron の初期化に依存しない機能の初期化処理
@@ -14,10 +15,13 @@ import * as release from './release';
 const initialize = async () => {
   await pptr.initialize(app);
   await store.initialize();
+  log.initialize();
 };
 const initializePromise = initialize();
 
 app.whenReady().then(async () => {
+  log.info('electron is ready.');
+
   // ipcMain.handle 登録
   ipc.subscribe();
 
