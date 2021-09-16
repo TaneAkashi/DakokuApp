@@ -47,7 +47,7 @@
     "about-window": "^1.14.0",
     "akashi-dakoku-core": "^0.5.0",
     "axios": "^0.21.1",
-    "electron-store": "^8.0.0",
+    "electron-store": "^8.0.1",
     "keytar": "^7.7.0",
     "puppeteer-core": "^8.0.0",
     "puppeteer-in-electron": "^3.0.4"
