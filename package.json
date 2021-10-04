@@ -44,7 +44,7 @@
   },
   "dependencies": {
     "@slack/webhook": "^6.0.0",
-    "about-window": "^1.14.0",
+    "about-window": "^1.15.0",
     "akashi-dakoku-core": "^0.5.0",
     "axios": "^0.21.1",
     "electron-store": "^8.0.0",
