@@ -329,10 +329,10 @@
     "@typescript-eslint/types" "4.28.0"
     eslint-visitor-keys "^2.0.0"
 
-about-window@^1.14.0:
-  version "1.14.0"
-  resolved "https://registry.yarnpkg.com/about-window/-/about-window-1.14.0.tgz#ac7a8beedf02110495685ba7e1285bcb3577656f"
-  integrity sha512-lKQtY2PzGGR0lq6121rkKotnWwccntQTAtEsDczwVhNgxtGaYqrXVFGnxzAm3V4AkyyqaVIG12/nqKdns01nVA==
+about-window@^1.15.2:
+  version "1.15.2"
+  resolved "https://registry.yarnpkg.com/about-window/-/about-window-1.15.2.tgz#0397216ce0cb6e8a4fa9ba12941e56d481d712b5"
+  integrity sha512-31mDAnLUfKm4uShfMzeEoS6a3nEto2tUt4zZn7qyAKedaTV4p0dGiW1n+YG8vtRh78mZiewghWJmoxDY+lHyYg==
 
 acorn-jsx@^5.3.1:
   version "5.3.1"
