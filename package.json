@@ -46,7 +46,7 @@
     "@slack/webhook": "^6.0.0",
     "about-window": "^1.14.0",
     "akashi-dakoku-core": "^0.5.0",
-    "axios": "^0.21.1",
+    "axios": "^1.2.2",
     "electron-store": "^8.0.0",
     "keytar": "^7.7.0",
     "puppeteer-core": "^8.0.0",
